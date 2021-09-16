@@ -275,8 +275,8 @@
   path = lib/meq
   url = https://github.com/shadowrylander/meq
 [submodule "meta"]
-        path = lib/meta
-        url = https://github.com/shadowrylander/meta.git
+	path = lib/meta
+	url = https://github.com/shadowrylander/meta.git
 [submodule "modalka"]
         path = lib/modalka
         url = https://github.com/mrkkrp/modalka.git
@@ -328,9 +328,6 @@
 [submodule "prescient"]
         path = lib/prescient
         url = https://github.com/raxod502/prescient.el.git
-[submodule "prime"]
-        path = lib/prime
-        url = https://github.com/shadowrylander/prime.git
 [submodule "profiles/alhassy"]
         path = profiles/alhassy
         url = https://github.com/alhassy/emacs.d.git
@@ -437,9 +434,6 @@
 [submodule "undo-tree"]
         path = lib/undo-tree
         url = https://gitlab.com/tsc25/undo-tree.git
-[submodule "uru"]
-        path = lib/uru
-        url = https://github.com/shadowrylander/uru.git
 [submodule "use-package"]
         path = lib/use-package
         url = https://github.com/jwiegley/use-package.git
@@ -488,3 +482,9 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
+[submodule "uru"]
+	path = lib/uru
+	url = https://github.com/shadowrylander/uru.git
+[submodule "prime"]
+	path = lib/prime
+	url = https://github.com/shadowrylander/prime.git
