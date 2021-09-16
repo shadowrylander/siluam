@@ -316,30 +316,6 @@
 [submodule "prescient"]
         path = borg/prescient
         url = https://github.com/raxod502/prescient.el.git
-[submodule "profiles/alhassy"]
-        path = profiles/alhassy
-        url = https://github.com/alhassy/emacs.d.git
-[submodule "profiles/centaur"]
-        path = profiles/centaur
-        url = https://github.com/seagle0128/.emacs.d.git
-[submodule "profiles/doom"]
-        path = profiles/doom
-        url = https://github.com/hlissner/.emacs.d.git
-[submodule "profiles/graphene/lisp"]
-        path = profiles/graphene/lisp
-        url = https://github.com/rdallasgray/graphene.git
-[submodule "profiles/nano/lisp"]
-        path = profiles/nano/lisp
-        url = https://github.com/rougier/nano-emacs.git
-[submodule "profiles/patrick"]
-        path = profiles/patrick
-        url = https://github.com/patrickt/emacs.git
-[submodule "profiles/prelude"]
-        path = profiles/prelude
-        url = https://github.com/bbatsov/prelude.git
-[submodule "profiles/spacemacs"]
-        path = profiles/spacemacs
-        url = https://github.com/syl20bnr/spacemacs.git
 [submodule "project-persist"]
         path = borg/project-persist
         url = https://github.com/rdallasgray/project-persist.git
