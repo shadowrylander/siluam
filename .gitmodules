@@ -1,60 +1,6 @@
-[submodule "gcmh"]
-        path = lib/gcmh
-        url = https://gitlab.com/koral/gcmh.git
-[submodule "no-littering"]
-        path = lib/no-littering
-        url = https://github.com/emacscollective/no-littering.git
-[submodule "leaf"]
-        path = lib/leaf
-        url = https://github.com/conao3/leaf.el.git
-[submodule "leaf-keywords"]
-        path = lib/leaf-keywords
-        url = https://github.com/conao3/leaf-keywords.el.git
-[submodule "lib/borg"]
-	path = lib/borg
-	url = https://github.com/emacscollective/borg.git
-[submodule "lib/closql"]
-	path = lib/closql
-	url = https://github.com/emacscollective/closql.git
-[submodule "lib/emacsql"]
-	path = lib/emacsql
-	url = https://github.com/skeeto/emacsql.git
-[submodule "lib/epkg"]
-	path = lib/epkg
-	url = https://github.com/emacscollective/epkg.git
-[submodule "uru"]
-        path = lib/uru
-        url = https://github.com/shadowrylander/uru.git
-[submodule "use-package"]
-        path = lib/use-package
-        url = https://github.com/jwiegley/use-package.git
-[submodule "use-package-deino"]
-        path = lib/use-package-deino
-        url = https://github.com/shadowrylander/use-package-deino.git
-[submodule "use-package-extras"]
-        path = lib/use-package-extras
-        url = https://github.com/shadowrylander/use-package-extras.git
-[submodule "use-package-hydra"]
-        path = lib/use-package-hydra
-        url = https://gitlab.com/to1ne/use-package-hydra.git
-[submodule "which-key"]
-        path = lib/which-key
-        url = https://github.com/justbur/emacs-which-key.git
-[submodule "dash"]
-	path = lib/dash
-	url = https://github.com/magnars/dash.el.git
-[submodule "deino"]
-	path = lib/deino
-	url = https://github.com/shadowrylander/deino.git
-[submodule "dmenu"]
-	path = lib/dmenu
-	url = https://github.com/lujun9972/el-dmenu.git
-[submodule "janus"]
-        path = lib/janus
-        url = https://github.com/shadowrylander/janus.git
-[submodule "key-chord"]
-        path = lib/key-chord
-        url = https://github.com/emacsorphanage/key-chord.git
+[submodule "a"]
+	path = lib/a
+	url = https://github.com/plexus/a.el.git
 [submodule "alloy"]
 	path = lib/alloy
 	url = https://github.com/shadowrylander/alloy.git
@@ -64,42 +10,86 @@
 [submodule "cosmoem"]
 	path = lib/cosmoem
 	url = https://gitlab.com/shadowrylander/cosmoem.git
-[submodule "a"]
-	path = lib/a
-	url = https://github.com/plexus/a.el.git
+[submodule "dash"]
+	path = lib/dash
+	url = https://github.com/magnars/dash.el.git
+[submodule "deino"]
+	path = lib/deino
+	url = https://github.com/shadowrylander/deino.git
+[submodule "dmenu"]
+	path = lib/dmenu
+	url = https://github.com/lujun9972/el-dmenu.git
+[submodule "doc"]
+	path = lib/doc
+	url = https://github.com/shadowrylander/doc.git
 [submodule "doom"]
-        path = profiles/doom
-        url = https://github.com/hlissner/doom-emacs.git
+	path = profiles/doom
+	url = https://github.com/hlissner/doom-emacs.git
         build-step = ./bin/doom --yes --localdir .local purge
         build-step = ./bin/doom --yes --localdir .local clean
         build-step = ./bin/doom --yes --localdir .local install
         build-step = ./bin/doom --yes --localdir .local sync -u
-        build-step = ./bin/doom --yes --localdir .local doctor
         profile = true
 [submodule "exec-path-from-shell"]
-        path = lib/exec-path-from-shell
-        url = https://github.com/purcell/exec-path-from-shell.git
+	path = lib/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell.git
 [submodule "exwm"]
-        path = lib/exwm
-        url = https://github.com/ch11ng/exwm.git
+	path = lib/exwm
+	url = https://github.com/ch11ng/exwm.git
 [submodule "f"]
-        path = lib/f
-        url = https://github.com/rejeep/f.el.git
+	path = lib/f
+	url = https://github.com/rejeep/f.el.git
+[submodule "fell"]
+	path = lib/fell
+	url = https://github.com/shadowrylander/fell.git
+[submodule "gcmh"]
+	path = lib/gcmh
+	url = https://gitlab.com/koral/gcmh.git
 [submodule "hydra"]
-        path = lib/hydra
-        url = https://github.com/abo-abo/hydra.git
+	path = lib/hydra
+	url = https://github.com/abo-abo/hydra.git
 [submodule "ido-completing-read+"]
 	path = lib/ido-completing-read+
 	url = https://github.com/DarwinAwardWinner/ido-completing-read-plus.git
+[submodule "janus"]
+	path = lib/janus
+	url = https://github.com/shadowrylander/janus.git
+[submodule "key-chord"]
+	path = lib/key-chord
+	url = https://github.com/emacsorphanage/key-chord.git
+[submodule "leaf"]
+	path = lib/leaf
+	url = https://github.com/conao3/leaf.el.git
+[submodule "leaf-keywords"]
+	path = lib/leaf-keywords
+	url = https://github.com/conao3/leaf-keywords.el.git
+[submodule "lib/borg"]
+	path = lib/lib/borg
+	url = https://github.com/emacscollective/borg.git
+[submodule "lib/closql"]
+	path = lib/lib/closql
+	url = https://github.com/emacscollective/closql.git
+[submodule "lib/emacsql"]
+	path = lib/lib/emacsql
+	url = https://github.com/skeeto/emacsql.git
+[submodule "lib/epkg"]
+	path = lib/lib/epkg
+	url = https://github.com/emacscollective/epkg.git
+[submodule "meq"]
+	path = lib/meq
+	url = https://github.com/shadowrylander/meq
 [submodule "naked"]
-        path = lib/naked
-        url = https://github.com/emacsmirror/naked.git
+	path = lib/naked
+	url = https://github.com/emacsmirror/naked.git
+[submodule "no-littering"]
+	path = lib/no-littering
+	url = https://github.com/emacscollective/no-littering.git
 [submodule "one"]
-        path = lib/one
-        url = https://github.com/shadowrylander/one
+	path = lib/one
+	url = https://github.com/shadowrylander/one
 [submodule "org"]
-        path = lib/org
-        url = https://code.orgmode.org/bzg/org-mode
+	path = lib/org
+	url = https://code.orgmode.org/bzg/org-mode
         build-step = make
         build-step = make autoloads
         build-step = borg-update-autoloads
@@ -107,30 +97,39 @@
         build-step = borg-makeinfo
         load-path = lisp
 [submodule "org-contrib"]
-        path = lib/org-contrib
-        url = https://git.sr.ht/~bzg/org-contrib
+	path = lib/org-contrib
+	url = https://git.sr.ht/~bzg/org-contrib
 [submodule "prime"]
-        path = lib/prime
-        url = https://github.com/shadowrylander/prime.git
+	path = lib/prime
+	url = https://github.com/shadowrylander/prime.git
 [submodule "s"]
-        path = lib/s
-        url = https://github.com/magnars/s.el.git
+	path = lib/s
+	url = https://github.com/magnars/s.el.git
 [submodule "settings"]
-	path = settings
+	path = lib/settings
 	url = https://github.com/shadowrylander/settings.git
-        s8472 = true
 [submodule "sorrow"]
-        path = lib/sorrow
-        url = https://github.com/shadowrylander/sorrow.git
-[submodule "meq"]
-        path = lib/meq
-        url = https://github.com/shadowrylander/meq
-[submodule "doc"]
-	path = lib/doc
-	url = https://github.com/shadowrylander/doc.git
-[submodule "fell"]
-        path = lib/fell
-        url = https://github.com/shadowrylander/fell.git
+	path = lib/sorrow
+	url = https://github.com/shadowrylander/sorrow.git
 [submodule "titan"]
-        path = lib/titan
-        url = https://github.com/shadowrylander/titan.git
+	path = lib/titan
+	url = https://github.com/shadowrylander/titan.git
+[submodule "uru"]
+	path = lib/uru
+	url = https://github.com/shadowrylander/uru.git
+[submodule "use-package"]
+	path = lib/use-package
+	url = https://github.com/jwiegley/use-package.git
+[submodule "use-package-deino"]
+	path = lib/use-package-deino
+	url = https://github.com/shadowrylander/use-package-deino.git
+[submodule "use-package-extras"]
+	path = lib/use-package-extras
+	url = https://github.com/shadowrylander/use-package-extras.git
+[submodule "use-package-hydra"]
+	path = lib/use-package-hydra
+	url = https://gitlab.com/to1ne/use-package-hydra.git
+[submodule "which-key"]
+	path = lib/which-key
+	url = https://github.com/justbur/emacs-which-key.git
+        build-step = ./bin/doom --yes --localdir .local doctor
