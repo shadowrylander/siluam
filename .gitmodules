@@ -10,9 +10,6 @@
 [submodule "cosmoem"]
 	path = lib/cosmoem
 	url = https://gitlab.com/shadowrylander/cosmoem.git
-[submodule "dash"]
-	path = lib/dash
-	url = https://github.com/magnars/dash.el.git
 [submodule "deino"]
 	path = lib/deino
 	url = https://github.com/shadowrylander/deino.git
@@ -29,6 +26,7 @@
         build-step = ./bin/doom --yes --localdir .local clean
         build-step = ./bin/doom --yes --localdir .local install
         build-step = ./bin/doom --yes --localdir .local sync -u
+        build-step = ./bin/doom --yes --localdir .local doctor
         profile = true
 [submodule "exec-path-from-shell"]
 	path = lib/exec-path-from-shell
@@ -42,9 +40,6 @@
 [submodule "fell"]
 	path = lib/fell
 	url = https://github.com/shadowrylander/fell.git
-[submodule "gcmh"]
-	path = lib/gcmh
-	url = https://gitlab.com/koral/gcmh.git
 [submodule "hydra"]
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra.git
@@ -63,30 +58,15 @@
 [submodule "leaf-keywords"]
 	path = lib/leaf-keywords
 	url = https://github.com/conao3/leaf-keywords.el.git
-[submodule "lib/borg"]
-	path = lib/lib/borg
-	url = https://github.com/emacscollective/borg.git
-[submodule "lib/closql"]
-	path = lib/lib/closql
-	url = https://github.com/emacscollective/closql.git
-[submodule "lib/emacsql"]
-	path = lib/lib/emacsql
-	url = https://github.com/skeeto/emacsql.git
-[submodule "lib/epkg"]
-	path = lib/lib/epkg
-	url = https://github.com/emacscollective/epkg.git
 [submodule "meq"]
 	path = lib/meq
 	url = https://github.com/shadowrylander/meq
 [submodule "naked"]
 	path = lib/naked
 	url = https://github.com/emacsmirror/naked.git
-[submodule "no-littering"]
-	path = lib/no-littering
-	url = https://github.com/emacscollective/no-littering.git
 [submodule "one"]
 	path = lib/one
-	url = https://github.com/shadowrylander/one
+	url = https://github.com/shadowrylander/one.git
 [submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode
@@ -105,9 +85,6 @@
 [submodule "s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el.git
-[submodule "settings"]
-	path = lib/settings
-	url = https://github.com/shadowrylander/settings.git
 [submodule "sorrow"]
 	path = lib/sorrow
 	url = https://github.com/shadowrylander/sorrow.git
@@ -132,4 +109,18 @@
 [submodule "which-key"]
 	path = lib/which-key
 	url = https://github.com/justbur/emacs-which-key.git
-        build-step = ./bin/doom --yes --localdir .local doctor
+[submodule "settings"]
+	path = settings
+	url = https://github.com/shadowrylander/settings.git
+[submodule "lib/borg"]
+	path = lib/borg
+	url = https://github.com/emacscollective/borg.git
+[submodule "lib/closql"]
+	path = lib/closql
+	url = https://github.com/emacscollective/closql.git
+[submodule "lib/epkg"]
+	path = lib/epkg
+	url = https://github.com/emacscollective/epkg.git
+[submodule "lib/emacsql"]
+	path = lib/emacsql
+	url = https://github.com/skeeto/emacsql.git
