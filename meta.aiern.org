@@ -355,13 +355,13 @@ subinit: init
 pull: subinit
 |git -C $(mkfileDir) pull
 
-add: pre-init
+add:
 |git -C $(mkfileDir) add .
 
-commit: pre-init
+commit:
 |-git -C $(mkfileDir) commit --allow-empty-message -am ""
 
-cammit: add commit
+cammit: init add commit
 
 push: cammit
 |-git -C $(mkfileDir) push
