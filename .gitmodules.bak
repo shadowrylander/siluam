@@ -154,9 +154,6 @@
 [submodule "ibuffer-sidebar"]
         path = lib/ibuffer-sidebar
         url = https://github.com/jojojames/ibuffer-sidebar.git
-[submodule "ido-completing-read+"]
-        path = lib/ido-completing-read+
-        url = https://github.com/DarwinAwardWinner/ido-completing-read-plus.git
 [submodule "iedit"]
         path = lib/iedit
         url = https://github.com/victorhge/iedit.git
@@ -322,3 +319,21 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
+[submodule "alamode"]
+	path = lib/alamode
+	url = https://github.com/shadowrylander/alamode.git
+[submodule "all-the-icons"]
+	path = lib/all-the-icons
+	url = https://github.com/domtronn/all-the-icons.el.git
+[submodule "cosmog"]
+	path = lib/cosmog
+	url = https://github.com/shadowrylander/cosmog.git
+[submodule "riot"]
+        path = lib/riot
+        url = https://github.com/shadowrylander/riot.git
+[submodule "lode"]
+        path = lib/lode
+        url = https://github.com/shadowrylander/lode.git
+[submodule "meta"]
+        path = lib/meta
+        url = https://github.com/shadowrylander/meta.git

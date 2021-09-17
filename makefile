@@ -28,28 +28,19 @@ tangle: tangle-setup
     -x chmod +x
 
 subinit: init
-|git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
-|git -C $(mkfileDir)/lib/org checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
 |git -C $(mkfileDir)/lib/borg checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
 |git -C $(mkfileDir)/lib/closql checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkg.git lib/epkg
 |git -C $(mkfileDir)/lib/epkg checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/magnars/dash.el.git lib/dash
-|git -C $(mkfileDir)/lib/dash checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/magnars/s.el.git lib/s
-|git -C $(mkfileDir)/lib/s checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
-|git -C $(mkfileDir)/lib/a checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
-|git -C $(mkfileDir)/lib/f checkout master
+|-git clone --depth 1 https://github.com/emacscollective/epkgs.git $(mkfileDir)/epkgs
+|-git -C $(mkfileDir)/epkgs checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 |git -C $(mkfileDir)/lib/emacsql checkout master
-|$(makefly) subinit
+|-$(makefly) subinit
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
-|cd $(mkfileDir)/lib/org; make; make autoloads
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 
 pull: subinit

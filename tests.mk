@@ -2,10 +2,7 @@
 .DEFAULT_GOAL := emacs
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
-profile := "damascus"
-
-echo:
-|echo $(profile)
+profile = $(shell cat $(mkfileDir)/CHANGEME)
 
 pre-test: subinit
 
@@ -52,7 +49,7 @@ test-nw-and-kill: test-and-kill-pre
 |$(test) -nw --profile $(profile)
 |$(killTest)
 
-emacs: tangle test
-emacs-nw: tangle nw-test
+emacs: test
+emacs-nw: nw-test
 remacs: delete emacs
 remacs-nw: delete emacs-nw

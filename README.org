@@ -2,20 +2,6 @@
 #+include: ./settings/README.org
 #+property: header-args:emacs-lisp+ :tangle yes
 
---------------
---------------
---------------
-
-WANT A DIFFERENT DEFAULT PROFILE!? CHANGE THIS!!
-
-#+begin_src emacs-lisp
-(defvar meq/var/default-profile "doom")
-#+end_src
-
---------------
---------------
---------------
-
 #+begin_quote
 Like Chemacs, but worse! — John Oliver (... Yeah, no; I wish! Maybe some day!)
 #+end_quote
@@ -238,13 +224,14 @@ build and activate the drone."
             partially
             (let* ((default-directory borg-top-level-directory)
                     (path (file-relative-name (borg-worktree package)))
-                    (exists (f-exists? path)))
+                    (exists (file-exists-p path)))
                 (when (and
                         meq/var/update
                         (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
                 (unless (or
                             exists
-                            (equal (borg-get package "s8472") "true"))
+                            (equal (borg-get package "s8472") "true")
+                            (equal (borg-get package "profile") "true"))
                     (borg--maybe-reuse-gitdir package)
                     (borg--call-git package "submodule" "add" "-f" "--depth" "1" "--name" package url path)
                         (borg--sort-submodule-sections ".gitmodules")
@@ -277,7 +264,7 @@ And I /would/ like to reuse my ~gitdir~, thank you for asking!
 (advice-add #'borg--maybe-reuse-gitdir :override #'meq/borg--maybe-reuse-gitdir-advice)
 #+end_src
 
-Then I'll assimilate the packages from my ~.gitmodules~ file:
+I'll assimilate the packages from my ~.gitmodules~ file:
 
 # with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
 # by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
@@ -295,7 +282,7 @@ Then I'll assimilate the packages from my ~.gitmodules~ file:
         ;; Adapted From:
         ;; Answer: https://stackoverflow.com/a/9366300/10827766
         ;; User: https://stackoverflow.com/users/267442/spec
-        (remove nil (mapcar #'(lambda (line) (interactive)
+        (remove nil (mapcar #'(lambda (pkg) (interactive)
             (unless (or
                         (string-match-p (regexp-quote "\\") (car pkg))
                         (string-match-p (regexp-quote "/") (car pkg)))
@@ -308,6 +295,7 @@ We'll wake up the borg here:
 (setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
                                 ("git@gitlab.com:" . "https://gitlab.com/")))
 (borg-initialize)
+(require 'meq)
 #+end_src
 
 *** Welcome to the 29th century
@@ -322,7 +310,7 @@ a 29th century [[https://github.com/emacscollective/borg][Borg]]!
 We'll add similar advice to his functions, foremost being ~one-assimilate~:
 
 #+begin_src emacs-lisp
-(defun one-assimilate (profile url &optional partially)
+(defun meq/one-assimilate-advice (profile url &optional partially)
   "Assimilate the profile named PROFILE from URL.
 
 If `epkg' is available, then only read the name of the profile
@@ -344,26 +332,30 @@ build and activate the drone."
                     (exists (f-exists? path)))
                 (when (and
                         meq/var/update
-                        (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
+                        (s-contains? "<<username>>" url)) (meq/call-tangle path))
                 (unless (or
                             exists
                             (equal (borg-get profile "s8472") "true"))
+                    (message "0")
                     (one--maybe-reuse-gitdir profile)
+                    (message "1")
                     (one--call-git profile
                                 "submodule"
                                 "add"
+                                "-f"
+                                "--depth"
+                                "1"
                                 "--name"
-                                (concat "profile" (if (member system-type '(windows-nt ms-dos)) "\\" "/"))
                                 profile
                                 url
                                 (file-relative-name (one-worktree profile)))
+                    (message "2")
                     (one--sort-submodule-sections ".gitmodules")
-                    (one--call-git profile
-                        "config" "--add" "-f" ".gitmodules" (concat "submodule." profile ".profile") "true")
-                    (one--call-git profile
-                        "config" "--add" "-f" ".gitmodules" (concat "submodule." profile ".s8472") "true")
+                    (message "3")
                     (one--call-git profile "add" ".gitmodules")
-                    (one--maybe-absorb-gitdir profile))
+                    (message "4")
+                    (one--maybe-absorb-gitdir profile)
+                    (message "5"))
                 exists))
         (one-build profile))
   (one--refresh-magit)
@@ -390,6 +382,15 @@ And finally ~one--maybe-reuse-gitdir~:
 (advice-add #'one--maybe-reuse-gitdir :override #'meq/one--maybe-reuse-gitdir-advice)
 #+end_src
 
+Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-emacs][doom-emacs]]:
+
+#+begin_src emacs-lisp
+(if (file-exists-p (concat pre-user-emacs-directory "profiles/doom"))
+  (one-activate "doom")
+  (one-assimilate "doom" "https://github.com/hlissner/doom-emacs.git")
+  (one-build "doom" t))
+#+end_src
+
 Then I'll assimilate the profiles from my ~.gitmodules~ file:
 
 #+begin_src emacs-lisp
@@ -405,7 +406,7 @@ Then I'll assimilate the profiles from my ~.gitmodules~ file:
         ;; Adapted From:
         ;; Answer: https://stackoverflow.com/a/9366300/10827766
         ;; User: https://stackoverflow.com/users/267442/spec
-        (remove nil (mapcar #'(lambda (line) (interactive)
+        (remove nil (mapcar #'(lambda (profile) (interactive)
             (when (or
                     (string-prefix-p "profiles\\" (car profile))
                     (string-prefix-p "profiles/" (car profile)))
@@ -430,8 +431,10 @@ plus 1, otherwise, set it to the default name of ~meq/var/default-profile~. The 
 [[https://www.emacswiki.org/emacs/DrewAdams][Drew Adams]]
 
 #+begin_src emacs-lisp
-(require 'meq)
 (defvar meq/var/profiled t)
+(defvar meq/var/default-profile (with-temp-buffer
+    (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
+    (buffer-string)))
 (defvar meq/var/profile-name (meq/if-two-items-in-cla "--profile" t meq/var/default-profile))
 #+end_src
 
@@ -734,7 +737,7 @@ This sets up the following:
     :use-package-preconfig (command-log-mode)
         ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
         (use-package-chords)
-    :use-package-postconfig (lode) (prime)
+    :use-package-postconfig (prime)
 #+end_src
 
 I don't like having to unbind keys before reassigning them:
@@ -841,13 +844,6 @@ Meet the [[https://gitlab.com/shadowrylander/cosmoem][cosmoem]] named
 
 #+begin_src emacs-lisp
 (meq/up cosmoem
-#+end_src
-
-This loads my [[https://github.com/shadowrylander/meta][meta]] package, which allows me to create ~deinos~ out of
-keymaps automagically:
-
-#+begin_src emacs-lisp
-    :use-package-postconfig (meta)
 #+end_src
 
 #+begin_src emacs-lisp

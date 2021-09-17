@@ -302,10 +302,6 @@ bootstrap-borg:
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
-
-subinit:
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/<<username>>/<<username>>.github.io.git lib/<<username>>.github.io
-|git -C $(mkfileDir)/lib/<<username>>.github.io checkout master
 #+end_src
 
 * makefile
@@ -347,9 +343,11 @@ subinit: init
 |git -C $(mkfileDir)/lib/closql checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkg.git lib/epkg
 |git -C $(mkfileDir)/lib/epkg checkout master
+|-git clone --depth 1 https://github.com/emacscollective/epkgs.git $(mkfileDir)/epkgs
+|-git -C $(mkfileDir)/epkgs checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 |git -C $(mkfileDir)/lib/emacsql checkout master
-|$(makefly) subinit
+|-$(makefly) subinit
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
@@ -380,10 +378,7 @@ include tests.mk
 .DEFAULT_GOAL := emacs
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
-profile := "damascus"
-
-echo:
-|echo $(profile)
+profile = $(shell cat $(mkfileDir)/CHANGEME)
 
 pre-test: subinit
 
@@ -430,13 +425,13 @@ test-nw-and-kill: test-and-kill-pre
 |$(test) -nw --profile $(profile)
 |$(killTest)
 
-emacs: tangle test
-emacs-nw: tangle nw-test
+emacs: test
+emacs-nw: nw-test
 remacs: delete emacs
 remacs-nw: delete emacs-nw
 #+end_src
 
-* strange
+* siluam
 ** damascus.el
 
 #+call: hash() :exports none
@@ -3552,21 +3547,26 @@ This has no effect unless you use library `misc-cmds.el'.")
 (defvar pre-user-emacs-directory (file-name-directory (or load-file-name buffer-file-name)))
 
 (mapc #'(lambda (pkg) (interactive)
-  (add-to-list 'load-path (concat pre-user-emacs-directory "lib/" pkg))) '(borg closql epkg emacsql))
+  (add-to-list 'load-path (concat
+                            pre-user-emacs-directory
+                            "lib/"
+                            (symbol-name pkg)))) '(borg closql epkg emacsql))
 (require 'borg)
 
-(unless (file-exists-p (concat pre-user-emacs-directory "lib/org"))
+(defun meq/borg-build-advice (clone &optional activate)
+  "Build the clone named CLONE.
+Interactively, or when optional ACTIVATE is non-nil,
+then also activate the clone using `borg-activate'."
+  (interactive (list (borg-read-clone "Build drone: ") t))
+  (borg--build-interactive clone)
+  (when activate (borg-activate clone)))
+(advice-add #'borg--maybe-absorb-gitdir :override #'ignore)
+(advice-add #'borg-build :override #'meq/borg-build-advice)
+
+(if (file-exists-p (concat pre-user-emacs-directory "lib/org"))
+  (borg-activate "org")
   (borg-assimilate "org" "https://code.orgmode.org/bzg/org-mode")
-  (mapc #'(lambda (command) (interactive) (borg--call-git
-    "config" "--add" "-f" (concat pre-user-emacs-directory ".gitmodules")
-    "submodule.org.build-step" command)) '("make"
-                                            "make autoloads"
-                                            "borg-update-autoloads"
-                                            "borg-byte-compile"
-                                            "borg-makeinfo"))
-  (borg--call-git "config" "--add" "-f"
-                  (concat pre-user-emacs-directory ".gitmodules") "submodule.org.load-path" "lisp"))
-(borg-activate "org")
+  (borg-build "org" t))
 (require 'org-loaddefs)
 
 ;; Adapted From: https://github.com/emacscollective/borg/blob/master/borg.el#L912

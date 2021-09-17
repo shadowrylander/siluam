@@ -11,7 +11,6 @@
 !**/**/*.git*
 !**/**/*.dep
 
-!/siluam/**/**
 !/themes/screenshots/**/**
 
 !/LICENSE
@@ -19,11 +18,16 @@
 !/borg.gif
 !/nebby.webp
 !/git-subtree
+!/CHANGEME
 
 **/**/README.el
 **/**/README.elc
 **/**/.local
-/lib
+
+!lib/
+lib/*
+!lib/org
+
 /epkgs
 /var
 /elpa
