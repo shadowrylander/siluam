@@ -11,10 +11,6 @@
                 ((file-exists-p "~/.emacs.d/settings/README.org") "~/.emacs.d/settings/README.org")
                 ((file-exists-p "home/.emacs.d/settings/README.org") "home/.emacs.d/settings/README.org"))))
     (when file (org-babel-lob-ingest file)))
-(let* ((file (cond
-                ((file-exists-p "~/.emacs.d/strange.aiern.org") "~/.emacs.d/strange.aiern.org")
-                ((file-exists-p "home/.emacs.d/strange.aiern.org") "home/.emacs.d/strange.aiern.org"))))
-    (when file (org-babel-lob-ingest file)))
 
 (defun meq/get-header nil (interactive)
     (nth 4 (org-heading-components)))

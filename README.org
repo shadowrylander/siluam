@@ -2,6 +2,20 @@
 #+include: ./settings/README.org
 #+property: header-args:emacs-lisp+ :tangle yes
 
+--------------
+--------------
+--------------
+
+WANT A DIFFERENT DEFAULT PROFILE!? CHANGE THIS!!
+
+#+begin_src emacs-lisp
+(defvar meq/var/default-profile "doom")
+#+end_src
+
+--------------
+--------------
+--------------
+
 #+begin_quote
 Like Chemacs, but worse! — John Oliver (... Yeah, no; I wish! Maybe some day!)
 #+end_quote
@@ -191,15 +205,9 @@ The first directory to compile and add is the directory of emacs packages, as gi
 managed by... well... you'll see.
 
 #+begin_src emacs-lisp
-(let* ((default-directory (concat pre-user-emacs-directory "lib")))
-    (normal-top-level-add-to-load-path '(".")))
-(mapc #'(lambda (pkg) (interactive)
-    (add-to-list
-        'load-path
-        (concat
-            pre-user-emacs-directory
-            "lib/"
-            (symbol-name pkg)))) '(a closql dash emacsql epkg f borg s))
+(let* ((default-directory (concat pre-user-emacs-directory "siluam")))
+    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-subdirs-to-load-path))
 #+end_src
 
 ** RESISTANCE IS FUTILE
@@ -208,86 +216,11 @@ managed by... well... you'll see.
 <p align="center"><a href="https://github.com/emacscollective/borg"><img src="borg.gif"></a></p>
 #+end_export
 
-#+begin_src emacs-lisp
-(setq package-enable-at-startup nil)
-(require 'borg)
-#+end_src
-
-My own version of ~borg-initialize~ will ignore modules without the ~one~ boolean set in ~.gitmodules~:
-
-#+begin_src emacs-lisp
-(defun borg-initialize-disabled nil
-  "Initialize assimilated drones.
-For each drone use `borg-activate' to add the appropriate
-directories to the `load-path' and `Info-directory-alist', and
-load the autoloads file, if it exists.
-If the value of a Git variable named `submodule.DRONE.disabled'
-is true in \"~/.emacs.d/.gitmodules\", then the drone named DRONE
-is skipped.
-If Emacs is running without an interactive terminal, then first
-load \"`user-emacs-directory'/etc/borg/init.el\", if that exists."
-  (when noninteractive
-    (let ((init (expand-file-name
-                 (convert-standard-filename "etc/borg/init.el")
-                 user-emacs-directory)))
-      (when (file-exists-p init)
-        (load-file init))))
-  (info-initialize)
-  (let ((start (current-time))
-        (skipped 0)
-        (initialized 0)
-        (borg--gitmodule-cache (borg-drones 'raw)))
-    (pcase-dolist (`(,drone) borg--gitmodule-cache)
-      (cond
-       ((equal (borg-get drone "disabled") "true") (cl-incf initialized) (borg-activate drone))
-       ((not (file-exists-p (borg-worktree drone))) (cl-incf skipped))
-       (t (cl-incf skipped))))
-    (let* ((message (current-message))
-           (inhibit (and message
-                         (string-match-p
-                          "\\`Recompiling .+init\\.el\\.\\.\\.\\'" message))))
-      (let ((inhibit-message inhibit))
-        (message "Initializing drones...done (%s drones in %.3fs%s)"
-                 initialized
-                 (float-time (time-subtract (current-time) start))
-                 (if (> skipped 0)
-                     (format ", %d skipped" skipped)
-                   "")))
-      (when inhibit
-        (let ((message-log-max nil))
-          (message "%s" message))))))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun meq/borg-activate-advice (clone)
-  "Activate the clone named CLONE.
-Add the appropriate directories to `load-path' and
-`Info-directory-list', and load the autoloads file,
-if it exists."
-  (interactive (list (borg-read-clone "Activate clone: ")))
-  (dolist (dir (borg-load-path clone))
-    (let (file)
-      (cond ((and (file-exists-p
-                   (setq file (expand-file-name
-                               (concat clone "-autoloads.el") dir)))
-                  (with-demoted-errors "Error loading autoloads: %s"
-                    (load file nil t))))
-            ((and (file-exists-p
-                   (setq file (expand-file-name
-                               (concat clone "-loaddefs.el") dir)))
-                  (with-demoted-errors "Error loading autoloads: %s"
-                    (add-to-list 'load-path dir) ; for `org'
-                    (load file nil t))))
-            (t (push dir load-path)))))
-  (dolist (dir (borg-info-path clone))
-    (push  dir Info-directory-list)))
-(advice-add #'borg-activate :override #'meq/borg-activate-advice)
-#+end_src
-
 I would like to force adding the git submodules and clone a depth of ~1~;
-this will also now tangle my packages as well:
+this will also tangle my packages as well:
 
 #+begin_src emacs-lisp
+(defvar meq/var/update (member "--update" command-line-args)) (delete "--update" command-line-args)
 (defun meq/borg-assimilate-advice (package url &optional partially)
   "Assimilate the package named PACKAGE from URL.
 If `epkg' is available, then only read the name of the package
@@ -306,7 +239,9 @@ build and activate the drone."
             (let* ((default-directory borg-top-level-directory)
                     (path (file-relative-name (borg-worktree package)))
                     (exists (f-exists? path)))
-                (when (and meq/var/update (s-contains? "<<username>>" url)) (meq/call-tangle path))
+                (when (and
+                        meq/var/update
+                        (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
                 (unless (or
                             exists
                             (equal (borg-get package "s8472") "true"))
@@ -342,42 +277,29 @@ And I /would/ like to reuse my ~gitdir~, thank you for asking!
 (advice-add #'borg--maybe-reuse-gitdir :override #'meq/borg--maybe-reuse-gitdir-advice)
 #+end_src
 
-Then I'll assimilate the packages from my ~.gitmodules~ file,
-with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
-by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]], as well as the following:
-- [[https://github.com/plexus/a.el][a.el]] by [[https://github.com/plexus][Arne Brasseur]]
-- [[https://github.com/rejeep/f.el][f.el]] by [[https://github.com/rejeep][Johan Andersson]]
-- [[https://github.com/magnars/dash.el][dash.el]] by [[https://github.com/magnars][Magnar Sveen]]
-- [[https://github.com/magnars/s.el][s.el]] by [[https://github.com/magnars][Magnar Sveen]]
+Then I'll assimilate the packages from my ~.gitmodules~ file:
+
+# with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
+# by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
 
 #+begin_src emacs-lisp
-(require 'a) (require 'dash) (require 's) (require 'f)
-(defvar meq/var/update (member "--update" command-line-args)) (delete "--update" command-line-args)
-(let* ((gitmodules (->> (concat pre-user-emacs-directory ".gitmodules") f-read s-chomp s-lines (--map (s-split " " it))))
+(let* ((gitmodules (borg-drones t))
         (command)
 
         ;; Adapted From:
         ;; Answer: https://superuser.com/a/927832/1154755
         ;; User: https://superuser.com/users/265996/jackson
-        (inhibit-message t)
-
-        (sub (lambda (string) (interactive) (s-contains? "[submodule" string)))
-        (url (lambda (string) (interactive) (s-contains? "url =" string)))
-        (slash (lambda (string) (interactive) (s-contains? (f-path-separator) string))))
+        (inhibit-message t))
     (mapc #'(lambda (pkg) (interactive)
                 (apply #'borg-assimilate pkg))
         ;; Adapted From:
         ;; Answer: https://stackoverflow.com/a/9366300/10827766
         ;; User: https://stackoverflow.com/users/267442/spec
         (remove nil (mapcar #'(lambda (line) (interactive)
-            (let* ((string* (string-trim (string-join line " "))))
-                (when (funcall sub string*) (add-to-list 'command (cadr (split-string string* "\"")) t))
-                (when (and
-                        command
-                        (funcall url string*)) (add-to-list 'command (string-trim (cadr (split-string string* "="))) t)
-                                                (unwind-protect
-                                                    (unless (funcall slash (car command)) command)
-                                                    (setq command nil))))) gitmodules))))
+            (unless (or
+                        (string-match-p (regexp-quote "\\") (car pkg))
+                        (string-match-p (regexp-quote "/") (car pkg)))
+                (list (car pkg) (cl-getf (cdr pkg) 'url)))) gitmodules))))
 #+end_src
 
 We'll wake up the borg here:
@@ -388,11 +310,121 @@ We'll wake up the borg here:
 (borg-initialize)
 #+end_src
 
+*** Welcome to the 29th century
+
+Meet [[https://github.com/shadowrylander/one][One]],
+a 29th century [[https://github.com/emacscollective/borg][Borg]]!
+
+#+begin_src emacs-lisp
+(require 'one)
+#+end_src
+
+We'll add similar advice to his functions, foremost being ~one-assimilate~:
+
+#+begin_src emacs-lisp
+(defun one-assimilate (profile url &optional partially)
+  "Assimilate the profile named PROFILE from URL.
+
+If `epkg' is available, then only read the name of the profile
+in the minibuffer and use the url stored in the Epkg database.
+If `epkg' is unavailable, the profile is not in the database, or
+with a prefix argument, then also read the url in the minibuffer.
+
+With a negative prefix argument only add the submodule but don't
+build and activate the drone."
+  (interactive
+   (nconc (one-read-profile "Assimilate profile: " current-prefix-arg)
+          (list (< (prefix-numeric-value current-prefix-arg) 0))))
+  (one--maybe-confirm-unsafe-action "assimilate" profile url)
+  (message "Assimilating %s..." profile)
+  (unless (or
+            partially
+            (let* ((default-directory one-top-level-directory)
+                    (path (file-relative-name (one-worktree profile)))
+                    (exists (f-exists? path)))
+                (when (and
+                        meq/var/update
+                        (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
+                (unless (or
+                            exists
+                            (equal (borg-get profile "s8472") "true"))
+                    (one--maybe-reuse-gitdir profile)
+                    (one--call-git profile
+                                "submodule"
+                                "add"
+                                "--name"
+                                (concat "profile" (if (member system-type '(windows-nt ms-dos)) "\\" "/"))
+                                profile
+                                url
+                                (file-relative-name (one-worktree profile)))
+                    (one--sort-submodule-sections ".gitmodules")
+                    (one--call-git profile
+                        "config" "--add" "-f" ".gitmodules" (concat "submodule." profile ".profile") "true")
+                    (one--call-git profile
+                        "config" "--add" "-f" ".gitmodules" (concat "submodule." profile ".s8472") "true")
+                    (one--call-git profile "add" ".gitmodules")
+                    (one--maybe-absorb-gitdir profile))
+                exists))
+        (one-build profile))
+  (one--refresh-magit)
+  (message "Assimilating %s...done" profile))
+(advice-add #'one-assimilate :override #'meq/one-assimilate-advice)
+#+end_src
+
+Then ~one--maybe-confirm-unsafe-action~:
+
+#+begin_src emacs-lisp
+(defun meq/one--maybe-confirm-unsafe-action-advice (action package url) (require 'epkg nil t))
+(advice-add #'one--maybe-confirm-unsafe-action :override #'meq/one--maybe-confirm-unsafe-action-advice)
+#+end_src
+
+And finally ~one--maybe-reuse-gitdir~:
+
+#+begin_src emacs-lisp
+(defun meq/one--maybe-reuse-gitdir-advice (profile)
+  (let ((gitdir (one-gitdir profile))
+        (topdir (one-worktree profile)))
+    (when (and (file-exists-p gitdir)
+               (not (file-exists-p topdir)))
+      (one--restore-worktree profile))))
+(advice-add #'one--maybe-reuse-gitdir :override #'meq/one--maybe-reuse-gitdir-advice)
+#+end_src
+
+Then I'll assimilate the profiles from my ~.gitmodules~ file:
+
+#+begin_src emacs-lisp
+(let* ((gitmodules (one-drones t))
+        (command)
+
+        ;; Adapted From:
+        ;; Answer: https://superuser.com/a/927832/1154755
+        ;; User: https://superuser.com/users/265996/jackson
+        (inhibit-message t))
+    (mapc #'(lambda (profile) (interactive)
+                (apply #'one-assimilate profile))
+        ;; Adapted From:
+        ;; Answer: https://stackoverflow.com/a/9366300/10827766
+        ;; User: https://stackoverflow.com/users/267442/spec
+        (remove nil (mapcar #'(lambda (line) (interactive)
+            (when (or
+                    (string-prefix-p "profiles\\" (car profile))
+                    (string-prefix-p "profiles/" (car profile)))
+                (list (car profile) (cl-getf (cdr profile) 'url)))) gitmodules))))
+#+end_src
+
+And finally, we'll wake up One here:
+
+#+begin_src emacs-lisp
+(setq one-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
+                                ("git@gitlab.com:" . "https://gitlab.com/")))
+(one-initialize)
+#+end_src
+
 ** Here's your profile
 
 Now that that's over with, let's get the profile name; this is done by searching through the ~command-line-args~
 list for the ~--profile~ argument. If found, get the profile name from the index of the ~--profile~ argument
-plus 1, otherwise, set it to the default name of ~damascus~. The following help with this:
+plus 1, otherwise, set it to the default name of ~meq/var/default-profile~. The following help with this:
 - [[https://github.com/shadowrylander/meq][meq]] by yours truely! :D
 - [[https://www.emacswiki.org/emacs/naked.el][naked]] by
 [[https://www.emacswiki.org/emacs/DrewAdams][Drew Adams]]
@@ -400,7 +432,7 @@ plus 1, otherwise, set it to the default name of ~damascus~. The following help 
 #+begin_src emacs-lisp
 (require 'meq)
 (defvar meq/var/profiled t)
-(defvar meq/var/profile-name (meq/if-two-items-in-cla "--profile" t "damascus"))
+(defvar meq/var/profile-name (meq/if-two-items-in-cla "--profile" t meq/var/default-profile))
 #+end_src
 
 ** Did I forget something...?
@@ -820,7 +852,7 @@ keymaps automagically:
 
 #+begin_src emacs-lisp
     :prime (", m" map-of-infinity/body "map-of-infinity")
-    :which-key-change-ryo ("," "damascus")
+    :which-key-change-ryo ("," meq/var/profile-name)
 #+end_src
 
 This ~deino~ leads to a bunch of other useful ~deinos~, as well as a few useful functions:
