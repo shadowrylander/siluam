@@ -223,13 +223,12 @@ build and activate the drone."
   (unless (or
             partially
             (let* ((default-directory borg-top-level-directory)
-                    (path* (ignore-errors (borg-worktree profile)))
-                    (path (when path* (file-relative-name path*))))
-                (when path* (when (and
+                    (path (ignore-errors (file-relative-name (borg-worktree profile)))))
+                (when path (when (and
                         meq/var/update
                         (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
                 (unless (or
-                            path*
+                            path
                             (equal (borg-get package "s8472") "true")
                             (equal (borg-get package "profile") "true")
                             (string-match-p (regexp-quote "\\") package)
@@ -239,7 +238,7 @@ build and activate the drone."
                     (borg--sort-submodule-sections ".gitmodules")
                     (borg--call-git package "add" ".gitmodules")
                     (borg--maybe-absorb-gitdir package)))
-                path*))
+                path))
     (borg-build package)
     (borg-activate package))
   (borg--refresh-magit)
@@ -327,13 +326,12 @@ build and activate the drone."
   (unless (or
             partially
             (let* ((default-directory one-top-level-directory)
-                    (path* (ignore-errors (one-worktree profile)))
-                    (path (when path* (file-relative-name path*))))
-                (when path* (when (and
+                    (path (ignore-errors (file-relative-name (one-worktree profile)))))
+                (when path (when (and
                         meq/var/update
                         (s-contains? "<<username>>" url)) (meq/call-tangle path))
                 (unless (or
-                            path*
+                            path
                             (equal (borg-get profile "s8472") "true")
                             (s-contains? "\\" profile)
                             (s-contains? "/" profile))
@@ -351,7 +349,7 @@ build and activate the drone."
                     (one--sort-submodule-sections ".gitmodules")
                     (one--call-git profile "add" ".gitmodules")
                     (one--maybe-absorb-gitdir profile)))
-                path*))
+                path))
         (one-build profile))
   (one--refresh-magit)
   (message "Assimilating %s...done" profile))
@@ -380,10 +378,13 @@ And finally ~one--maybe-reuse-gitdir~:
 Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-emacs][doom-emacs]]:
 
 #+begin_src emacs-lisp
-(if (file-exists-p (concat pre-user-emacs-directory "profiles/doom"))
-  (if meq/var/update (one-build "doom" t) (one-activate "doom"))
-  (one-assimilate "doom" "https://github.com/hlissner/doom-emacs.git")
-  (one-build "doom" t))
+(defvar meq/var/default-profile (with-temp-buffer
+    (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
+    (buffer-string)))
+(if (file-exists-p (concat pre-user-emacs-directory "profiles" (f-path-separator) meq/var/default-profile))
+  (if meq/var/update (one-build meq/var/default-profile t) (one-activate meq/var/default-profile))
+  (one-assimilate meq/var/default-profile "https://github.com/hlissner/doom-emacs.git")
+  (one-build meq/var/default-profile t))
 #+end_src
 
 Then I'll assimilate the profiles from my ~.gitmodules~ file:
@@ -424,9 +425,6 @@ plus 1, otherwise, set it to the default name of ~meq/var/default-profile~. The 
 
 #+begin_src emacs-lisp
 (defvar meq/var/profiled t)
-(defvar meq/var/default-profile (with-temp-buffer
-    (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
-    (buffer-string)))
 (defvar meq/var/profile-name (meq/if-two-items-in-cla "--profile" t meq/var/default-profile))
 #+end_src
 
