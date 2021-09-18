@@ -49,6 +49,14 @@ test-nw-and-kill: test-and-kill-pre
 |$(test) -nw --profile $(profile)
 |$(killTest)
 
+test-update-and-kill: test-and-kill-pre
+|$(test) --update --profile $(profile)
+|$(killTest)
+
+test-nw-update-and-kill: test-and-kill-pre
+|$(test) -nw --update --profile $(profile)
+|$(killTest)
+
 emacs: test
 emacs-nw: nw-test
 remacs: delete emacs

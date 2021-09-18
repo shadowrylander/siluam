@@ -206,7 +206,6 @@ I would like to force adding the git submodules and clone a depth of ~1~;
 this will also tangle my packages as well:
 
 #+begin_src emacs-lisp
-(defvar meq/var/update (member "--update" command-line-args)) (delete "--update" command-line-args)
 (defun meq/borg-assimilate-advice (package url &optional partially)
   "Assimilate the package named PACKAGE from URL.
 If `epkg' is available, then only read the name of the package
@@ -224,20 +223,27 @@ build and activate the drone."
             partially
             (let* ((default-directory borg-top-level-directory)
                     (path (ignore-errors (file-relative-name (borg-worktree profile)))))
-                (when path (when (and
-                        meq/var/update
-                        (string-match-p (regexp-quote "<<username>>") url)) (meq/call-tangle path))
                 (unless (or
-                            path
+                            (not path)
+                            (not meq/var/update)
                             (equal (borg-get package "s8472") "true")
                             (equal (borg-get package "profile") "true")
                             (string-match-p (regexp-quote "\\") package)
                             (string-match-p (regexp-quote "/") package))
                     (borg--maybe-reuse-gitdir package)
-                    (borg--call-git package "submodule" "add" "-f" "--depth" "1" "--name" package url path)
+                    (borg--call-git
+                        package
+                        "submodule"
+                        "add"
+                        "--recursive"
+                        "-f"
+                        "--depth" "1"
+                        "--name" package
+                        url
+                        path)
                     (borg--sort-submodule-sections ".gitmodules")
                     (borg--call-git package "add" ".gitmodules")
-                    (borg--maybe-absorb-gitdir package)))
+                    (borg--maybe-absorb-gitdir package))
                 path))
     (borg-build package)
     (borg-activate package))
@@ -327,11 +333,9 @@ build and activate the drone."
             partially
             (let* ((default-directory one-top-level-directory)
                     (path (ignore-errors (file-relative-name (one-worktree profile)))))
-                (when path (when (and
-                        meq/var/update
-                        (s-contains? "<<username>>" url)) (meq/call-tangle path))
                 (unless (or
-                            path
+                            (not path)
+                            (not meq/var/update)
                             (equal (borg-get profile "s8472") "true")
                             (s-contains? "\\" profile)
                             (s-contains? "/" profile))
@@ -339,16 +343,15 @@ build and activate the drone."
                     (one--call-git profile
                                 "submodule"
                                 "add"
+                                "--recursive"
                                 "-f"
-                                "--depth"
-                                "1"
-                                "--name"
-                                profile
+                                "--depth" "1"
+                                "--name" profile
                                 url
                                 path)
                     (one--sort-submodule-sections ".gitmodules")
                     (one--call-git profile "add" ".gitmodules")
-                    (one--maybe-absorb-gitdir profile)))
+                    (one--maybe-absorb-gitdir profile))
                 path))
         (one-build profile))
   (one--refresh-magit)

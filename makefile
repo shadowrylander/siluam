@@ -9,22 +9,23 @@ makefly := make -f $(mkfileDir)/makefly.mk
 init: pre-init tangle
 
 pre-init:
+|-fd . -HIt d -t e -x rm -rf
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/settings.git
 |git -C $(mkfileDir)/settings checkout main
 
 tangle-setup:
-|cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
-|chmod +x $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
+|cp $(mkfileDir)/settings/org-tangle.sh $(mkfileDir)/settings/backup-tangle.sh
+|chmod +x $(mkfileDir)/settings/org-tangle.sh $(mkfileDir)/settings/backup-tangle.sh
 
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
     -HId 1 -e org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-    -x $(mkfileDir)/backup-tangle.sh
-|fd . $(mkfileDir) \
-    -HId 1 -e sh \
+    -x $(mkfileDir)/settings/backup-tangle.sh
+|fd . $(mkfileDir)/settings \
+    -HIe sh \
     -x chmod +x
 
 subinit: init

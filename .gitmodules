@@ -19,15 +19,20 @@
 [submodule "doc"]
 	path = lib/doc
 	url = https://github.com/shadowrylander/doc.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "doom"]
 	path = profiles/doom
 	url = https://github.com/hlissner/doom-emacs.git
-        build-step = ./bin/doom --yes --localdir .local purge
-        build-step = ./bin/doom --yes --localdir .local clean
-        build-step = ./bin/doom --yes --localdir .local install
-        build-step = ./bin/doom --yes --localdir .local sync -u
-        build-step = ./bin/doom --yes --localdir .local doctor
-        profile = true
+	build-step = ./bin/doom --yes --localdir .local purge
+	build-step = ./bin/doom --yes --localdir .local clean
+	build-step = ./bin/doom --yes --localdir .local install
+	build-step = ./bin/doom --yes --localdir .local sync -u
+	build-step = ./bin/doom --yes --localdir .local doctor
+	profile = true
 [submodule "exec-path-from-shell"]
 	path = lib/exec-path-from-shell
 	url = https://github.com/purcell/exec-path-from-shell.git
@@ -40,6 +45,11 @@
 [submodule "fell"]
 	path = lib/fell
 	url = https://github.com/shadowrylander/fell.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "hydra"]
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra.git
@@ -49,6 +59,11 @@
 [submodule "janus"]
 	path = lib/janus
 	url = https://github.com/shadowrylander/janus.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "key-chord"]
 	path = lib/key-chord
 	url = https://github.com/emacsorphanage/key-chord.git
@@ -61,6 +76,11 @@
 [submodule "meq"]
 	path = lib/meq
 	url = https://github.com/shadowrylander/meq
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "naked"]
 	path = lib/naked
 	url = https://github.com/emacsmirror/naked.git
@@ -70,18 +90,23 @@
 [submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode
-        build-step = make
-        build-step = make autoloads
-        build-step = borg-update-autoloads
-        build-step = borg-byte-compile
-        build-step = borg-makeinfo
-        load-path = lisp
+	build-step = make
+	build-step = make autoloads
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
+	load-path = lisp
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = https://git.sr.ht/~bzg/org-contrib
 [submodule "prime"]
 	path = lib/prime
 	url = https://github.com/shadowrylander/prime.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el.git
@@ -91,18 +116,38 @@
 [submodule "titan"]
 	path = lib/titan
 	url = https://github.com/shadowrylander/titan.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "uru"]
 	path = lib/uru
 	url = https://github.com/shadowrylander/uru.git
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "use-package"]
 	path = lib/use-package
 	url = https://github.com/jwiegley/use-package.git
 [submodule "use-package-deino"]
 	path = lib/use-package-deino
 	url = https://github.com/shadowrylander/use-package-deino.git
+        build-step = chmod +x ./settings/org-tangle.sh
+        build-step = ./settings/org-tangle.sh .
+        build-step = borg-update-autoloads
+        build-step = borg-byte-compile
+        build-step = borg-makeinfo
 [submodule "use-package-extras"]
 	path = lib/use-package-extras
 	url = https://github.com/shadowrylander/use-package-extras.git
+        build-step = chmod +x ./settings/org-tangle.sh
+        build-step = ./settings/org-tangle.sh .
+        build-step = borg-update-autoloads
+        build-step = borg-byte-compile
+        build-step = borg-makeinfo
 [submodule "use-package-hydra"]
 	path = lib/use-package-hydra
 	url = https://gitlab.com/to1ne/use-package-hydra.git
