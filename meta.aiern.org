@@ -3344,21 +3344,19 @@ This has no effect unless you use library `misc-cmds.el'.")
 Interactively, or when optional ACTIVATE is non-nil,
 then also activate the clone using `borg-activate'."
   (interactive (list (borg-read-clone "Build drone: ") t))
-  (borg--build-interactive clone)
+  (borg--build-noninteractive clone)
   (when activate (borg-activate clone)))
-(advice-add #'borg--maybe-absorb-gitdir :override #'ignore)
 (advice-add #'borg-build :override #'meq/borg-build-advice)
 
 (defvar meq/var/update (member "--update" command-line-args)) (delete "--update" command-line-args)
+(when meq/var/update (mapc #'borg-build (remove nil (mapcar #'(lambda (pkg) (interactive)
+  (when (string=
+          (file-name-as-directory (expand-file-name (cl-getf (cdr pkg) 'path)))
+          (borg-worktree (car pkg))) (car pkg))) (borg-drones t)))))
 
-(if (file-exists-p (concat pre-user-emacs-directory "lib/org"))
-  (if (or
-        meq/var/update
-        (not (file-exists-p (concat pre-user-emacs-directory "lib/org/lisp/org-loaddefs.el"))))
-    (borg-build "org" t)
-    (borg-activate "org"))
-  (borg-assimilate "org" "https://code.orgmode.org/bzg/org-mode")
-  (borg-build "org" t))
+(if (not (file-exists-p (concat pre-user-emacs-directory "lib/org/lisp/org-loaddefs.el")))
+  (borg-build "org" t)
+  (borg-activate "org"))
 (require 'org-loaddefs)
 
 (if (file-exists-p (concat pre-user-emacs-directory "lib/one"))

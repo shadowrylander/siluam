@@ -202,54 +202,20 @@ managed by... well... you'll see.
 <p align="center"><a href="https://github.com/emacscollective/borg"><img src="borg.gif"></a></p>
 #+end_export
 
-I would like to force adding the git submodules and clone a depth of ~1~;
-this will also tangle my packages as well:
+First of all, let's make the error message a /little/ more descriptive:
 
 #+begin_src emacs-lisp
-(defun meq/borg-assimilate-advice (package url &optional partially)
-  "Assimilate the package named PACKAGE from URL.
-If `epkg' is available, then only read the name of the package
-in the minibuffer and use the url stored in the Epkg database.
-If `epkg' is unavailable, the package is not in the database, or
-with a prefix argument, then also read the url in the minibuffer.
-With a negative prefix argument only add the submodule but don't
-build and activate the drone."
-  (interactive
-   (nconc (borg-read-package "Assimilate package: " current-prefix-arg)
-          (list (< (prefix-numeric-value current-prefix-arg) 0))))
-  (borg--maybe-confirm-unsafe-action "assimilate" package url)
-  (message "Assimilating %s..." package)
-  (unless (or
-            partially
-            (let* ((default-directory borg-top-level-directory)
-                    (path (ignore-errors (file-relative-name (borg-worktree profile)))))
-                (unless (or
-                            (not path)
-                            (not meq/var/update)
-                            (equal (borg-get package "s8472") "true")
-                            (equal (borg-get package "profile") "true")
-                            (string-match-p (regexp-quote "\\") package)
-                            (string-match-p (regexp-quote "/") package))
-                    (borg--maybe-reuse-gitdir package)
-                    (borg--call-git
-                        package
-                        "submodule"
-                        "add"
-                        "--recursive"
-                        "-f"
-                        "--depth" "1"
-                        "--name" package
-                        url
-                        path)
-                    (borg--sort-submodule-sections ".gitmodules")
-                    (borg--call-git package "add" ".gitmodules")
-                    (borg--maybe-absorb-gitdir package))
-                path))
-    (borg-build package)
-    (borg-activate package))
-  (borg--refresh-magit)
-  (message "Assimilating %s...done" package))
-(advice-add #'borg-assimilate :override #'meq/borg-assimilate-advice)
+(defun meq/borg--call-git-advice (pkg &rest args)
+  (let ((process-connection-type nil)
+        (buffer (generate-new-buffer
+                 (concat " *Borg Git" (and pkg (concat " " pkg)) "*"))))
+    (if (eq (apply #'call-process "git" nil buffer nil args) 0)
+        (kill-buffer buffer)
+      (with-current-buffer buffer
+        (special-mode))
+      (pop-to-buffer buffer)
+      (error "Borg Git: %s %s:\n\n%s" pkg args (buffer-string)))))
+(advice-add #'borg--call-git :override #'meq/borg--call-git-advice)
 #+end_src
 
 I most likely already checked the code of the package I want to install:
@@ -271,27 +237,8 @@ And I /would/ like to reuse my ~gitdir~, thank you for asking!
 (advice-add #'borg--maybe-reuse-gitdir :override #'meq/borg--maybe-reuse-gitdir-advice)
 #+end_src
 
-I'll assimilate the packages from my ~.gitmodules~ file:
-
 # with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
 # by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
-
-#+begin_src emacs-lisp
-(let* ((gitmodules (borg-drones t))
-        (command)
-
-        ;; Adapted From:
-        ;; Answer: https://superuser.com/a/927832/1154755
-        ;; User: https://superuser.com/users/265996/jackson
-        (inhibit-message t))
-    (mapc #'(lambda (pkg) (interactive)
-                (apply #'borg-assimilate pkg))
-        ;; Adapted From:
-        ;; Answer: https://stackoverflow.com/a/9366300/10827766
-        ;; User: https://stackoverflow.com/users/267442/spec
-        (remove nil (mapcar #'(lambda (pkg*) (interactive)
-            (list (car pkg*) (cl-getf (cdr pkg*) 'url))) gitmodules))))
-#+end_src
 
 We'll wake up the borg here:
 
@@ -311,55 +258,7 @@ a 29th century [[https://github.com/emacscollective/borg][Borg]]!
 (require 'one)
 #+end_src
 
-We'll add similar advice to his functions, foremost being ~one-assimilate~:
-
-#+begin_src emacs-lisp
-(defun meq/one-assimilate-advice (profile url &optional partially)
-  "Assimilate the profile named PROFILE from URL.
-
-If `epkg' is available, then only read the name of the profile
-in the minibuffer and use the url stored in the Epkg database.
-If `epkg' is unavailable, the profile is not in the database, or
-with a prefix argument, then also read the url in the minibuffer.
-
-With a negative prefix argument only add the submodule but don't
-build and activate the drone."
-  (interactive
-   (nconc (one-read-profile "Assimilate profile: " current-prefix-arg)
-          (list (< (prefix-numeric-value current-prefix-arg) 0))))
-  (one--maybe-confirm-unsafe-action "assimilate" profile url)
-  (message "Assimilating %s..." profile)
-  (unless (or
-            partially
-            (let* ((default-directory one-top-level-directory)
-                    (path (ignore-errors (file-relative-name (one-worktree profile)))))
-                (unless (or
-                            (not path)
-                            (not meq/var/update)
-                            (equal (borg-get profile "s8472") "true")
-                            (s-contains? "\\" profile)
-                            (s-contains? "/" profile))
-                    (one--maybe-reuse-gitdir profile)
-                    (one--call-git profile
-                                "submodule"
-                                "add"
-                                "--recursive"
-                                "-f"
-                                "--depth" "1"
-                                "--name" profile
-                                url
-                                path)
-                    (one--sort-submodule-sections ".gitmodules")
-                    (one--call-git profile "add" ".gitmodules")
-                    (one--maybe-absorb-gitdir profile))
-                path))
-        (one-build profile))
-  (one--refresh-magit)
-  (message "Assimilating %s...done" profile))
-(advice-add #'one-assimilate :override #'meq/one-assimilate-advice)
-#+end_src
-
-Then ~one--maybe-confirm-unsafe-action~:
+We'll add similar advice to his functions, first being ~one--maybe-confirm-unsafe-action~:
 
 #+begin_src emacs-lisp
 (defun meq/one--maybe-confirm-unsafe-action-advice (action package url) (require 'epkg nil t))
@@ -378,35 +277,23 @@ And finally ~one--maybe-reuse-gitdir~:
 (advice-add #'one--maybe-reuse-gitdir :override #'meq/one--maybe-reuse-gitdir-advice)
 #+end_src
 
+Do we have to update any profiles?
+
+#+begin_src emacs-lisp
+(when meq/var/update (mapc #'one-build (remove nil (mapcar #'(lambda (pkg) (interactive)
+  (when (string=
+          (file-name-as-directory (expand-file-name (cl-getf (cdr pkg) 'path)))
+          (one-worktree (car pkg))) (car pkg))) (one-drones t)))))
+#+end_src
+
 Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-emacs][doom-emacs]]:
 
 #+begin_src emacs-lisp
 (defvar meq/var/default-profile (with-temp-buffer
     (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
     (buffer-string)))
-(if (file-exists-p (concat pre-user-emacs-directory "profiles" (f-path-separator) meq/var/default-profile))
-  (if meq/var/update (one-build meq/var/default-profile t) (one-activate meq/var/default-profile))
-  (one-assimilate meq/var/default-profile "https://github.com/hlissner/doom-emacs.git")
-  (one-build meq/var/default-profile t))
-#+end_src
-
-Then I'll assimilate the profiles from my ~.gitmodules~ file:
-
-#+begin_src emacs-lisp
-(let* ((gitmodules (one-drones t))
-        (command)
-
-        ;; Adapted From:
-        ;; Answer: https://superuser.com/a/927832/1154755
-        ;; User: https://superuser.com/users/265996/jackson
-        (inhibit-message t))
-    (mapc #'(lambda (profile) (interactive)
-                (apply #'one-assimilate profile))
-        ;; Adapted From:
-        ;; Answer: https://stackoverflow.com/a/9366300/10827766
-        ;; User: https://stackoverflow.com/users/267442/spec
-        (remove nil (mapcar #'(lambda (profile*) (interactive)
-            (list (car profile*) (cl-getf (cdr profile*) 'url))) gitmodules))))
+(if (not (f-exists? (meq/ued-profiles meq/var/default-profile ".local")))
+    (one-build meq/var/default-profile t) (one-activate meq/var/default-profile))
 #+end_src
 
 And finally, we'll wake up One here:

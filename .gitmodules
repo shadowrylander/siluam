@@ -135,19 +135,19 @@
 [submodule "use-package-deino"]
 	path = lib/use-package-deino
 	url = https://github.com/shadowrylander/use-package-deino.git
-        build-step = chmod +x ./settings/org-tangle.sh
-        build-step = ./settings/org-tangle.sh .
-        build-step = borg-update-autoloads
-        build-step = borg-byte-compile
-        build-step = borg-makeinfo
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "use-package-extras"]
 	path = lib/use-package-extras
 	url = https://github.com/shadowrylander/use-package-extras.git
-        build-step = chmod +x ./settings/org-tangle.sh
-        build-step = ./settings/org-tangle.sh .
-        build-step = borg-update-autoloads
-        build-step = borg-byte-compile
-        build-step = borg-makeinfo
+	build-step = chmod +x ./settings/org-tangle.sh
+	build-step = ./settings/org-tangle.sh .
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "use-package-hydra"]
 	path = lib/use-package-hydra
 	url = https://gitlab.com/to1ne/use-package-hydra.git
@@ -157,15 +157,3 @@
 [submodule "settings"]
 	path = settings
 	url = https://github.com/shadowrylander/settings.git
-[submodule "lib/borg"]
-	path = lib/borg
-	url = https://github.com/emacscollective/borg.git
-[submodule "lib/closql"]
-	path = lib/closql
-	url = https://github.com/emacscollective/closql.git
-[submodule "lib/epkg"]
-	path = lib/epkg
-	url = https://github.com/emacscollective/epkg.git
-[submodule "lib/emacsql"]
-	path = lib/emacsql
-	url = https://github.com/skeeto/emacsql.git
