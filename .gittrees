@@ -14,3 +14,7 @@
 	url = closql
 	path = siluam/closql
 	branch = master
+[subtree "siluam/emacsql"]
+	url = emacsql
+	path = siluam/emacsql
+	branch = master
