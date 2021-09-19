@@ -2,3 +2,7 @@
 	url = settings
 	path = settings
 	branch = main
+[subtree "siluam/borg"]
+	url = borg
+	path = siluam/borg
+	branch = master
