@@ -12,6 +12,46 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 	url = https://github.com/<<username>>/settings.git
 	fetch = +refs/heads/main:refs/remotes/origin/main
 	pushurl = git@github.com:<<username>>/settings.git
+[remote "borg"]
+	url = https://github.com/emacscollective/borg.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "epkg"]
+	url = https://github.com/emacscollective/epkg.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "closql"]
+	url = https://github.com/emacscollective/closql.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "emacsql"]
+	url = https://github.com/skeeto/emacsql.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[submodule "alloy"]
+  pushurl = git@github.com:<<username>>/alloy.git
+[submodule "cosmoem"]
+  pushurl = git@gitlab.com:<<username>>/cosmoem.git
+[submodule "deino"]
+  pushurl = git@github.com:<<username>>/deino.git
+[submodule "doc"]
+  pushurl = git@github.com:<<username>>/doc.git
+[submodule "fell"]
+  pushurl = git@github.com:<<username>>/fell.git
+[submodule "janus"]
+  pushurl = git@github.com:<<username>>/janus.git
+[submodule "meq"]
+  pushurl = git@github.com:<<username>>/meq
+[submodule "one"]
+  pushurl = git@github.com:<<username>>/one.git
+[submodule "prime"]
+  pushurl = git@github.com:<<username>>/prime.git
+[submodule "sorrow"]
+	pushurl = git@github.com:<<username>>/sorrow.git
+[submodule "titan"]
+	pushurl = git@github.com:<<username>>/titan.git
+[submodule "uru"]
+	pushurl = git@github.com:<<username>>/uru.git
+[submodule "use-package-deino"]
+	pushurl = git@github.com:<<username>>/use-package-deino.git
+[submodule "use-package-extras"]
+	pushurl = git@github.com:<<username>>/use-package-extras.git
 #+end_src
 
 * pre-borg.mk
@@ -5240,23 +5280,12 @@ With prefix FORCE, packages will all be upgraded discarding local changes."
 ;;; quelpa.el ends here
 #+end_src
 
-* early-init.el
+** straight-config.el
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210604182053300746900
-
-#+name: 20210604182053300746900
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
-;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
-(defvar pre-user-emacs-directory (file-name-directory (or load-file-name buffer-file-name)))
-
+#+begin_src emacs-lisp :tangle (meq/tangle-path)
 ;; Adapted From: https://github.com/raxod502/straight.el#how-do-i-pin-package-versions-or-use-only-tagged-releases
 ;; And: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
 ;; And: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-
-(setq package-enable-at-startup nil)
 
 (setq straight-profiles
       '((nil . "default.el")
@@ -5292,17 +5321,42 @@ With prefix FORCE, packages will all be upgraded discarding local changes."
 
 (autoload #'straight-x-pull-all "straight-x")
 (autoload #'straight-x-freeze-versions "straight-x")
+#+end_src
 
-(load (concat pre-user-emacs-directory "siluam/quelpa.el"))
+** package-config.el
 
-;; auto-compile -> packed
-;; no-littering
-;; gcmh
-;; borg -> epkg -> closql -> emacsql-sqlite -> emacsql
-;;      -> magit -> dash
-;;               -> git-commit -> transient
-;;                             -> with-editor
-;;               -> magit-section
+#+begin_src emacs-lisp :tangle (meq/tangle-path)
+(require 'package)
+(add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+(setq package-selected-packages '(borg))
+(when (require 'borg nil t) (package-install 'borg) (require 'borg))
+(if (require 'borg-elpa nil t) (borg-elpa-initialize) (package-initialize))
+#+end_src
+
+* early-init.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210604182053300746900
+
+#+name: 20210604182053300746900
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
+;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
+(defvar pre-user-emacs-directory (file-name-directory (or load-file-name buffer-file-name)))
+
+(setq package-enable-at-startup nil)
+
+;; (load (concat pre-user-emacs-directory "siluam/package-config.el"))
+;; (load (concat pre-user-emacs-directory "siluam/straight-config.el"))
+;; (load (concat pre-user-emacs-directory "siluam/quelpa.el"))
+
+(mapc #(lambda (pkg) (interactive)
+  (load (concat
+          pre-user-emacs-directory
+          "siluam"
+          (if (member system-type '(windows-nt ms-dos) "\\" "/"))
+          (symbol-name pkg)))) '(emacsql emacsql-sqlite closql epkg borg))
 
 ;; Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 (setq load-prefer-newer t)

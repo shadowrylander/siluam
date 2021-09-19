@@ -2,3 +2,43 @@
 	url = https://github.com/shadowrylander/settings.git
 	fetch = +refs/heads/main:refs/remotes/origin/main
 	pushurl = git@github.com:shadowrylander/settings.git
+[remote "borg"]
+	url = https://github.com/emacscollective/borg.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "epkg"]
+	url = https://github.com/emacscollective/epkg.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "closql"]
+	url = https://github.com/emacscollective/closql.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[remote "emacsql"]
+	url = https://github.com/skeeto/emacsql.git
+	fetch = +refs/heads/master:refs/remotes/origin/master
+[submodule "alloy"]
+  pushurl = git@github.com:shadowrylander/alloy.git
+[submodule "cosmoem"]
+  pushurl = git@gitlab.com:shadowrylander/cosmoem.git
+[submodule "deino"]
+  pushurl = git@github.com:shadowrylander/deino.git
+[submodule "doc"]
+  pushurl = git@github.com:shadowrylander/doc.git
+[submodule "fell"]
+  pushurl = git@github.com:shadowrylander/fell.git
+[submodule "janus"]
+  pushurl = git@github.com:shadowrylander/janus.git
+[submodule "meq"]
+  pushurl = git@github.com:shadowrylander/meq
+[submodule "one"]
+  pushurl = git@github.com:shadowrylander/one.git
+[submodule "prime"]
+  pushurl = git@github.com:shadowrylander/prime.git
+[submodule "sorrow"]
+	pushurl = git@github.com:shadowrylander/sorrow.git
+[submodule "titan"]
+	pushurl = git@github.com:shadowrylander/titan.git
+[submodule "uru"]
+	pushurl = git@github.com:shadowrylander/uru.git
+[submodule "use-package-deino"]
+	pushurl = git@github.com:shadowrylander/use-package-deino.git
+[submodule "use-package-extras"]
+	pushurl = git@github.com:shadowrylander/use-package-extras.git

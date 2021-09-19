@@ -4,12 +4,18 @@
 [submodule "alloy"]
         path = lib/alloy
         url = https://github.com/shadowrylander/alloy.git
+[submodule "auto-compile"]
+        path = lib/auto-compile
+        url = https://github.com/emacscollective/auto-compile.git
 [submodule "command-log-mode"]
         path = lib/command-log-mode
         url = https://github.com/lewang/command-log-mode.git
 [submodule "cosmoem"]
         path = lib/cosmoem
         url = https://gitlab.com/shadowrylander/cosmoem.git
+[submodule "dash"]
+        path = lib/dash
+        url = https://github.com/magnars/dash.el.git
 [submodule "deino"]
         path = lib/deino
         url = https://github.com/shadowrylander/deino.git
@@ -49,6 +55,9 @@
         build-step = borg-update-autoloads
         build-step = borg-byte-compile
         build-step = borg-makeinfo
+[submodule "gcmh"]
+        path = lib/gcmh
+        url = https://gitlab.com/koral/gcmh.git
 [submodule "hydra"]
         path = lib/hydra
         url = https://github.com/abo-abo/hydra.git
@@ -72,6 +81,9 @@
 [submodule "leaf-keywords"]
         path = lib/leaf-keywords
         url = https://github.com/conao3/leaf-keywords.el.git
+[submodule "magit"]
+        path = lib/magit
+        url = https://github.com/magit/magit.git
 [submodule "meq"]
         path = lib/meq
         url = https://github.com/shadowrylander/meq
@@ -83,6 +95,9 @@
 [submodule "naked"]
         path = lib/naked
         url = https://github.com/emacsmirror/naked.git
+[submodule "no-littering"]
+        path = lib/no-littering
+        url = https://github.com/emacscollective/no-littering.git
 [submodule "one"]
         path = lib/one
         url = https://github.com/shadowrylander/one.git
@@ -98,6 +113,9 @@
 [submodule "org-contrib"]
         path = lib/org-contrib
         url = https://git.sr.ht/~bzg/org-contrib
+[submodule "packed"]
+        path = lib/packed
+        url = https://github.com/emacscollective/packed.git
 [submodule "prime"]
         path = lib/prime
         url = https://github.com/shadowrylander/prime.git
@@ -110,46 +128,52 @@
         path = lib/s
         url = https://github.com/magnars/s.el.git
 [submodule "sorrow"]
-	path = lib/sorrow
-	url = https://github.com/shadowrylander/sorrow.git
+        path = lib/sorrow
+        url = https://github.com/shadowrylander/sorrow.git
 [submodule "titan"]
-	path = lib/titan
-	url = https://github.com/shadowrylander/titan.git
+        path = lib/titan
+        url = https://github.com/shadowrylander/titan.git
         build-step = chmod +x ./settings/org-tangle.sh
         build-step = ./settings/org-tangle.sh .
         build-step = borg-update-autoloads
         build-step = borg-byte-compile
         build-step = borg-makeinfo
+[submodule "transient"]
+        path = lib/transient
+        url = https://github.com/magit/transient.git
 [submodule "uru"]
-	path = lib/uru
-	url = https://github.com/shadowrylander/uru.git
+        path = lib/uru
+        url = https://github.com/shadowrylander/uru.git
         build-step = chmod +x ./settings/org-tangle.sh
         build-step = ./settings/org-tangle.sh .
         build-step = borg-update-autoloads
         build-step = borg-byte-compile
         build-step = borg-makeinfo
 [submodule "use-package"]
-	path = lib/use-package
-	url = https://github.com/jwiegley/use-package.git
+        path = lib/use-package
+        url = https://github.com/jwiegley/use-package.git
 [submodule "use-package-deino"]
-	path = lib/use-package-deino
-	url = https://github.com/shadowrylander/use-package-deino.git
+        path = lib/use-package-deino
+        url = https://github.com/shadowrylander/use-package-deino.git
         build-step = chmod +x ./settings/org-tangle.sh
         build-step = ./settings/org-tangle.sh .
         build-step = borg-update-autoloads
         build-step = borg-byte-compile
         build-step = borg-makeinfo
 [submodule "use-package-extras"]
-	path = lib/use-package-extras
-	url = https://github.com/shadowrylander/use-package-extras.git
+        path = lib/use-package-extras
+        url = https://github.com/shadowrylander/use-package-extras.git
         build-step = chmod +x ./settings/org-tangle.sh
         build-step = ./settings/org-tangle.sh .
         build-step = borg-update-autoloads
         build-step = borg-byte-compile
         build-step = borg-makeinfo
 [submodule "use-package-hydra"]
-	path = lib/use-package-hydra
-	url = https://gitlab.com/to1ne/use-package-hydra.git
+        path = lib/use-package-hydra
+        url = https://gitlab.com/to1ne/use-package-hydra.git
 [submodule "which-key"]
-	path = lib/which-key
-	url = https://github.com/justbur/emacs-which-key.git
+        path = lib/which-key
+        url = https://github.com/justbur/emacs-which-key.git
+[submodule "with-editor"]
+        path = lib/with-editor
+        url = https://github.com/magit/with-editor.git
