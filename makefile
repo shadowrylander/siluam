@@ -4,15 +4,12 @@
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
-makefly := make -f $(mkfileDir)/makefly.mk
 
 init: pre-init tangle
 
 pre-init:
 |-fd . -HIt d -t e -x rm -rf
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/settings.git
-|git -C $(mkfileDir)/settings checkout main
 
 tangle-setup:
 |cp $(mkfileDir)/settings/org-tangle.sh $(mkfileDir)/settings/backup-tangle.sh
@@ -31,7 +28,6 @@ tangle: tangle-setup
 subinit: init
 |-git clone --depth 1 https://github.com/emacsmirror/epkgs.git $(mkfileDir)/epkgs
 |-git -C $(mkfileDir)/epkgs checkout master
-|-$(makefly) subinit
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'

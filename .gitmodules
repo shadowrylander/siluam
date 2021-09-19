@@ -109,10 +109,6 @@
 [submodule "s"]
         path = lib/s
         url = https://github.com/magnars/s.el.git
-[submodule "settings"]
-	path = settings
-	url = https://github.com/shadowrylander/settings.git
-		s8472 = true
 [submodule "sorrow"]
 	path = lib/sorrow
 	url = https://github.com/shadowrylander/sorrow.git
