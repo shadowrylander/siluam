@@ -10,3 +10,7 @@
 	url = epkg
 	path = siluam/epkg
 	branch = master
+[subtree "siluam/closql"]
+	url = closql
+	path = siluam/closql
+	branch = master
