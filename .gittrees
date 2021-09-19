@@ -6,3 +6,7 @@
 	url = borg
 	path = siluam/borg
 	branch = master
+[subtree "siluam/epkg"]
+	url = epkg
+	path = siluam/epkg
+	branch = master
