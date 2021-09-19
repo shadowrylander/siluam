@@ -237,8 +237,27 @@ And I /would/ like to reuse my ~gitdir~, thank you for asking!
 (advice-add #'borg--maybe-reuse-gitdir :override #'meq/borg--maybe-reuse-gitdir-advice)
 #+end_src
 
+I'll assimilate the packages from my ~.gitmodules~ file:
+
 # with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
 # by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
+
+#+begin_src emacs-lisp
+(let* ((gitmodules (borg-drones t t))
+        (command)
+
+        ;; Adapted From:
+        ;; Answer: https://superuser.com/a/927832/1154755
+        ;; User: https://superuser.com/users/265996/jackson
+        (inhibit-message t))
+    (mapc #'(lambda (pkg) (interactive)
+                (apply #'borg-assimilate pkg))
+        ;; Adapted From:
+        ;; Answer: https://stackoverflow.com/a/9366300/10827766
+        ;; User: https://stackoverflow.com/users/267442/spec
+        (remove nil (mapcar #'(lambda (pkg) (interactive)
+            (list (car pkg) (cl-getf (cdr pkg) 'url))) gitmodules))))
+#+end_src
 
 We'll wake up the borg here:
 
@@ -280,10 +299,26 @@ And finally ~one--maybe-reuse-gitdir~:
 Do we have to update any profiles?
 
 #+begin_src emacs-lisp
-(when meq/var/update (mapc #'one-build (remove nil (mapcar #'(lambda (pkg) (interactive)
-  (when (string=
-          (file-name-as-directory (expand-file-name (cl-getf (cdr pkg) 'path)))
-          (one-worktree (car pkg))) (car pkg))) (one-drones t)))))
+(when meq/var/update (mapc #'one-build (mapcar #'car (one-drones t))))
+#+end_src
+
+Then I'll assimilate the profiles from my ~.gitmodules~ file:
+
+#+begin_src emacs-lisp
+(let* ((gitmodules (one-drones t t))
+        (command)
+
+        ;; Adapted From:
+        ;; Answer: https://superuser.com/a/927832/1154755
+        ;; User: https://superuser.com/users/265996/jackson
+        (inhibit-message t))
+    (mapc #'(lambda (profile) (interactive)
+                (apply #'one-assimilate profile))
+        ;; Adapted From:
+        ;; Answer: https://stackoverflow.com/a/9366300/10827766
+        ;; User: https://stackoverflow.com/users/267442/spec
+        (remove nil (mapcar #'(lambda (profile*) (interactive)
+            (list (car profile*) (cl-getf (cdr profile*) 'url))) gitmodules))))
 #+end_src
 
 Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-emacs][doom-emacs]]:
@@ -292,8 +327,13 @@ Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-
 (defvar meq/var/default-profile (with-temp-buffer
     (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
     (buffer-string)))
-(if (not (f-exists? (meq/ued-profiles meq/var/default-profile ".local")))
-    (one-build meq/var/default-profile t) (one-activate meq/var/default-profile))
+
+(if (f-exists? (meq/ued-profiles meq/var/default-profile))
+    (if (f-exists? (meq/ued-profiles meq/var/default-profile ".local"))
+        (one-activate meq/var/default-profile)
+        (one-build meq/var/default-profile t))
+  (one-assimilate meq/var/default-profile "https://github.com/hlissner/doom-emacs.git")
+  (one-build meq/var/default-profile t))
 #+end_src
 
 And finally, we'll wake up One here:

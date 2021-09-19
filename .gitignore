@@ -23,6 +23,7 @@
 **/**/README.elc
 **/**/.local
 
+/lib
 /epkgs
 /var
 /elpa

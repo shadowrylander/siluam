@@ -3346,24 +3346,76 @@ then also activate the clone using `borg-activate'."
   (interactive (list (borg-read-clone "Build drone: ") t))
   (borg--build-noninteractive clone)
   (when activate (borg-activate clone)))
+(advice-add #'borg--maybe-absorb-gitdir :override #'ignore)
 (advice-add #'borg-build :override #'meq/borg-build-advice)
 
+(defun meq/borg-assimilate-advice (package url &optional partially)
+  "Assimilate the package named PACKAGE from URL.
+If `epkg' is available, then only read the name of the package
+in the minibuffer and use the url stored in the Epkg database.
+If `epkg' is unavailable, the package is not in the database, or
+with a prefix argument, then also read the url in the minibuffer.
+With a negative prefix argument only add the submodule but don't
+build and activate the drone."
+  (interactive
+   (nconc (borg-read-package "Assimilate package: " current-prefix-arg)
+          (list (< (prefix-numeric-value current-prefix-arg) 0))))
+  (borg--maybe-confirm-unsafe-action "assimilate" package url)
+  (message "Assimilating %s..." package)
+  (unless (equal (borg-get package "s8472") "true")
+      (borg--maybe-reuse-gitdir package)
+      (borg--call-git
+        package
+        "-C" borg-top-level-directory
+        "submodule"
+        "add"
+        "-f"
+        "--depth" "1"
+        "--name" package
+        url
+        (or (borg-get package "path") (file-relative-name (borg-worktree package))))
+      (borg--sort-submodule-sections ".gitmodules")
+      (borg--call-git package "add" ".gitmodules")
+      (borg--maybe-absorb-gitdir package))
+  (unless partially
+    (borg-build package)
+    (borg-activate package))
+  (borg--refresh-magit)
+  (message "Assimilating %s...done" package))
+(advice-add #'borg-assimilate :override #'meq/borg-assimilate-advice)
+
+(defun meq/borg-drones-advice (func &rest args)
+  (let* ((barg (pop args))
+          (assimilating (pop args)))
+    (seq-filter #'(lambda (pkg*) (interactive)
+      (let* ((pkg (car pkg*))
+              (path* (cl-getf (cdr pkg*) 'path))
+              (path (cond ((listp path*) (car path*))
+                          ((stringp path*) path*)))
+              (exists (file-exists-p (borg-worktree pkg))))
+        (and (not (string-match-p (regexp-quote "\\") pkg))
+            (not (string-match-p (regexp-quote "/") pkg))
+            (or
+              (and assimilating (not exists))
+              (and exists (not assimilating)))
+            (string=
+                  (string-remove-suffix pkg path)
+                  (string-remove-prefix borg-user-emacs-directory borg-drones-directory)))))
+      (funcall func barg))))
+(advice-add #'borg-drones :around #'meq/borg-drones-advice)
+
 (defvar meq/var/update (member "--update" command-line-args)) (delete "--update" command-line-args)
-(when meq/var/update (mapc #'borg-build (remove nil (mapcar #'(lambda (pkg) (interactive)
-  (when (string=
-          (file-name-as-directory (expand-file-name (cl-getf (cdr pkg) 'path)))
-          (borg-worktree (car pkg))) (car pkg))) (borg-drones t)))))
+(when meq/var/update (mapc #'borg-build (mapcar #'car (borg-drones t))))
 
-(if (not (file-exists-p (concat pre-user-emacs-directory "lib/org/lisp/org-loaddefs.el")))
-  (borg-build "org" t)
-  (borg-activate "org"))
+(global-auto-revert-mode 1)
+(auto-revert-mode 1)
+(if (file-exists-p (concat pre-user-emacs-directory "lib/org"))
+  (if (file-exists-p (concat pre-user-emacs-directory "lib/org/lisp/org-loaddefs.el"))
+    (borg-activate "org")
+    (borg-build "org" t))
+  (borg-assimilate "org" "https://code.orgmode.org/bzg/org-mode")
+  (borg-build "org" t))
 (require 'org-loaddefs)
-
-(if (file-exists-p (concat pre-user-emacs-directory "lib/one"))
-  (borg-activate "one")
-  (borg-assimilate "one" "https://github.com/shadowrylander/one.git")
-  (borg-build "one" t))
-(require 'one)
 
 ;; Adapted From: https://github.com/emacscollective/borg/blob/master/borg.el#L912
 (defun meq/call (program buffer-name &rest args)
