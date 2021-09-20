@@ -565,7 +565,6 @@ This sets up the following:
     :use-package-preconfig (command-log-mode)
         ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
         (use-package-chords)
-    :use-package-postconfig (prime)
 #+end_src
 
 I don't like having to unbind keys before reassigning them:
@@ -619,7 +618,7 @@ by [[Andy Drop][https://codeberg.org/dr.ops]]:
 
 #+begin_src emacs-lisp
 (meq/up uru :demon ((alloy-chord "uu") 'uru (alloy-chord "ii") 'minoru)
-    :prime ("u u" uru "uru") ("u m" minoru "minoru"))
+    :config (with-eval-after-load 'prime (prime "u u" uru "uru") (prime "u m" minoru "minoru")))
 #+end_src
 
 *** Um... Which-Key was that, again...?
@@ -675,8 +674,9 @@ Meet the [[https://gitlab.com/shadowrylander/cosmoem][cosmoem]] named
 #+end_src
 
 #+begin_src emacs-lisp
-    :prime (", m" map-of-infinity/body "map-of-infinity")
-    :which-key-change-ryo ("," meq/var/profile-name)
+    :config (with-eval-after-load 'prime
+                (prime ", m" map-of-infinity/body "map-of-infinity")
+                (which-key-change-ryo "," meq/var/profile-name))
 #+end_src
 
 This ~deino~ leads to a bunch of other useful ~deinos~, as well as a few useful functions:
@@ -718,8 +718,8 @@ And finally, [[https://github.com/shadowrylander/sorrow][sorrow]], forked from
 
 #+begin_src emacs-lisp
 (meq/up sorrow :demon ((alloy-chord "kk") 'meq/sorrow-execute-with-current-bindings)
-    :primer+ ("t" "toggles")
-    :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
+    :config (with-eval-after-load 'prime (primer+ "t" "toggles"))
+            ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
             (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
 #+end_src
 

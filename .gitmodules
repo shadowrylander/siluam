@@ -116,14 +116,6 @@
 [submodule "packed"]
         path = lib/packed
         url = https://github.com/emacscollective/packed.git
-[submodule "prime"]
-        path = lib/prime
-        url = https://github.com/shadowrylander/prime.git
-        build-step = chmod +x ./settings/org-tangle.sh
-        build-step = ./settings/org-tangle.sh .
-        build-step = borg-update-autoloads
-        build-step = borg-byte-compile
-        build-step = borg-makeinfo
 [submodule "s"]
         path = lib/s
         url = https://github.com/magnars/s.el.git
