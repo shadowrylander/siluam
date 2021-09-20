@@ -61,9 +61,6 @@
 [submodule "hydra"]
         path = lib/hydra
         url = https://github.com/abo-abo/hydra.git
-[submodule "ido-completing-read+"]
-        path = lib/ido-completing-read+
-        url = https://github.com/DarwinAwardWinner/ido-completing-read-plus.git
 [submodule "janus"]
         path = lib/janus
         url = https://github.com/shadowrylander/janus.git
@@ -95,6 +92,9 @@
 [submodule "naked"]
         path = lib/naked
         url = https://github.com/emacsmirror/naked.git
+[submodule "nano"]
+        path = profiles/nano/lisp
+        url = https://github.com/rougier/nano-emacs.git
 [submodule "no-littering"]
         path = lib/no-littering
         url = https://github.com/emacscollective/no-littering.git

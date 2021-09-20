@@ -160,9 +160,6 @@ trees with the :notangle: tag."
 #+end_src
 
 * org-tangle-functions.el
-:PROPERTIES:
-:header-args:emacs-lisp+: :comments none
-:END:
 
 #+call: hash() :exports none
 

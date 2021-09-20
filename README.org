@@ -325,14 +325,14 @@ Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-
 
 #+begin_src emacs-lisp
 (defvar meq/var/default-profile (with-temp-buffer
-    (insert-file-contents (concat pre-user-emacs-directory "CHANGEME"))
+    (insert-file-contents (meq/ued* "CHANGEME"))
     (buffer-string)))
 
 (if (f-exists? (meq/ued-profiles meq/var/default-profile))
     (if (f-exists? (meq/ued-profiles meq/var/default-profile ".local"))
         (one-activate meq/var/default-profile)
         (one-build meq/var/default-profile t))
-  (one-assimilate meq/var/default-profile "https://github.com/hlissner/doom-emacs.git")
+  (one-assimilate meq/var/default-profile (one-get meq/var/default-profile "url"))
   (one-build meq/var/default-profile t))
 #+end_src
 
@@ -386,9 +386,7 @@ For specific profiles, if applicable, we will add any arguments necessary to be 
 #+begin_src emacs-lisp
 (pcase meq/var/profile-name
     ("damascus" (meq/add-args-to-cla '(--literate-config)))
-    ("nano" (meq/add-args-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
-    ("graphene" (meq/add-args-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el
-                                        --literate-config))))
+    ("nano" (meq/add-args-to-cla '(--profile-lib profiles/nano/lisp/nano.el))))
 #+end_src
 
 ** After Vars
@@ -845,9 +843,13 @@ These are any last-minute steps before running any specific Emacs profile.
                         meq/var/kill-buffer-query-functions
                         confirm-kill-processes
                         meq/var/confirm-kill-processes))))
+
 (pcase meq/var/profile-name
-    ("doom" (let* ((path (meq/ued-profiles "doom" "modules" "ui" "popup")))
-                (load (meq/ued-lib "ido-completing-read+" "ido-completing-read+.el"))))
+    ("doom" (let* ((icr+ "ido-completing-read+")
+                    (path (meq/ued-lib icr+)))
+                (unless (f-exists? path)
+                    (borg-assimilate "https://github.com/DarwinAwardWinner/ido-completing-read-plus.git"))
+                (load (f-join path (concat icr+ ".el")))))
     ("spacemacs" (let* ((path* (meq/ued-profiles "spacemacs"))
                         (path (f-join
                             path*
@@ -861,8 +863,10 @@ These are any last-minute steps before running any specific Emacs profile.
                     (load (f-join path "funcs.el"))
                     (spacemacs-bootstrap/init-use-package)
                     (meq/disable-kill-queries)))
-    ("alhassy" (progn
-                (require 'quelpa-use-package)
+    ("alhassy" (let* ((qup "quelpa-use-package")
+                        (path (meq/ued-lib qup)))
+                (unless (require (intern qup) nil t)
+                    (borg-assimilate (concat "https://github.com/quelpa/" qup ".git")))
                 (require 'org-indent)
                 (require 'org-keys)
                 (define-prefix-command 'meq/alhassy-helm-map)
