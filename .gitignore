@@ -26,6 +26,7 @@
 **/**/.local
 
 /lib
+/profiles
 /epkgs
 /var
 /elpa
