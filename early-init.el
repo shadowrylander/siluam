@@ -1,3 +1,7 @@
+;; Yo!
+
+
+;; [[file:early-init.org::*Yo!][Yo!:1]]
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 (defvar pre-user-emacs-directory (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -158,3 +162,4 @@ byte-compiled before it is loaded."
     (concat pre-user-emacs-directory "early-init.aiern.org")
     t))
 (meq/reload-early-init)
+;; Yo!:1 ends here
