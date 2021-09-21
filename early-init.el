@@ -58,7 +58,7 @@ build and activate the drone."
           (borg-get package "path")
           (concat
             (string-remove-prefix borg-user-emacs-directory borg-drones-directory)
-            (if (member system-type '(windows-nt ms-dos)))
+            meq/var/slash
             package)))
       (borg--sort-submodule-sections ".gitmodules")
       (borg--call-git package "add" ".gitmodules")

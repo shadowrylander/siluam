@@ -318,12 +318,15 @@ Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-
     (insert-file-contents (meq/ued* "default.aiern.org"))
     (buffer-string)))
 
-(if (f-exists? (meq/ued-profiles meq/var/default-profile))
-    (if (f-exists? (meq/ued-profiles meq/var/default-profile ".local"))
-        (one-activate meq/var/default-profile)
-        (one-build meq/var/default-profile t))
-  (one-assimilate meq/var/default-profile (one-get meq/var/default-profile "url"))
-  (one-build meq/var/default-profile t))
+(meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" (meq/ued-profiles))
+
+(let* ((path (meq/ued-profiles meq/var/default-profile)))
+    (meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" path)
+    (if (f-exists? path)
+        (if (f-exists? (f-join path ".local"))
+            (one-activate meq/var/default-profile)
+            (one-build meq/var/default-profile t))
+        (one-assimilate meq/var/default-profile (one-get meq/var/default-profile "url"))))
 #+end_src
 
 And finally, we'll wake up One here:
@@ -346,6 +349,18 @@ plus 1, otherwise, set it to the default name of ~meq/var/default-profile~. The 
 #+begin_src emacs-lisp
 (defvar meq/var/profiled t)
 (defvar meq/var/profile-name (meq/if-two-items-in-cla "--profile" t meq/var/default-profile))
+#+end_src
+
+Let's "quickly" set up the selected profile as well:
+
+#+begin_src emacs-lisp
+(let* ((path (meq/ued-profiles meq/var/profile-name)))
+    (meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" path)
+    (if (f-exists? path)
+        (if (f-exists? (f-join path ".local"))
+            (one-activate meq/var/profile-name)
+            (one-build meq/var/profile-name t))
+        (one-assimilate meq/var/profile-name (one-get meq/var/profile-name "url"))))
 #+end_src
 
 ** Did I forget something...?
@@ -375,8 +390,7 @@ For specific profiles, if applicable, we will add any arguments necessary to be 
 
 #+begin_src emacs-lisp
 (pcase meq/var/profile-name
-    ("damascus" (meq/add-args-to-cla '(--literate-config)))
-    ("nano" (meq/add-args-to-cla '(--profile-lib profiles/nano/lisp/nano.el))))
+    ("damascus" (meq/add-args-to-cla '(--literate-config))))
 #+end_src
 
 ** After Vars
@@ -838,7 +852,7 @@ These are any last-minute steps before running any specific Emacs profile.
     ("doom" (let* ((icr+ "ido-completing-read+")
                     (path (meq/ued-lib icr+)))
                 (unless (f-exists? path)
-                    (borg-assimilate "https://github.com/DarwinAwardWinner/ido-completing-read-plus.git"))
+                    (borg-assimilate icr+ "https://github.com/DarwinAwardWinner/ido-completing-read-plus.git"))
                 (load (f-join path (concat icr+ ".el")))))
     ("spacemacs" (let* ((path* (meq/ued-profiles "spacemacs"))
                         (path (f-join
@@ -958,7 +972,7 @@ command-line, and otherwise, load the profile's usual ~early-init~ if it exists.
                 (meq/ued* "early-init.el")
                 (meq/ued "early-init.el"))
             (error "Sorry! The profile does not seem to be set!")
-            (meq/cl "early-init.el"))))
+            (meq/cl (meq/ued "early-init.el")))))
 #+end_src
 
 *** A quiet place
@@ -967,5 +981,7 @@ If there's an alternate library directory or file the user wants to load,
 ~--profile-early-lib~ will do the trick:
 
 #+begin_src emacs-lisp
-(meq/load-from-cla "--profile-early-lib" t)
+(meq/if-item-in-cla "--profile-early-lib"
+    (meq/load-from-cla "--profile-early-lib" t)
+    (meq/cl (meq/ued (concat "early-" meq/var/profile-name ".el"))))
 #+end_src

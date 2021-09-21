@@ -232,7 +232,7 @@ command-line, and otherwise, load the profile's usual ~init~ if it exists.
                 (meq/ued* "init.el")
                 (meq/ued "init.el"))
             (error "Sorry! The profile does not seem to be set!")
-            (meq/cl "init.el"))))
+            (meq/cl (meq/ued "init.el")))))
 #+end_src
 
 ** A quieter place
@@ -245,5 +245,7 @@ If there's an alternate library directory or file the user wants to load,
 #+end_quote
 
 #+begin_src emacs-lisp
-(meq/load-from-cla "--profile-lib" t)
+(meq/if-item-in-cla "--profile-lib"
+    (meq/load-from-cla "--profile-lib" t)
+    (meq/cl (meq/ued (concat meq/var/profile-name ".el"))))
 #+end_src
