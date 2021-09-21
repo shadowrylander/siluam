@@ -1,24 +1,15 @@
-#+setupfile: ./settings/README.org
+#+setupfile: ./settings/TANGLE.org
 #+include: ./settings/README.org
 
-*  ইয়ো, ইয়ো, ইয়ো, চলো যাই, যাও, যাও! Yo, yo, yo, let's go, go, go!
+* ইয়ো, ইয়ো, ইয়ো! Yo, Yo, Yo!
 
-This holds the ~early-init~ and ~init~ files for my version of a literate configuration for
-[[https://www.gnu.org/software/emacs/][GNU Emacs]].
+Step 1 of my version of a literate configuration for [[https://www.gnu.org/software/emacs/][GNU Emacs]].
 
 The ~noweb-ref~ headers are adapted from
 [[https://emacs.stackexchange.com/users/388/melioratus][Melioratus's]] answer
-[[https://emacs.stackexchange.com/a/38935/31428][here]]:
+[[https://emacs.stackexchange.com/a/38935/31428][here]].
 
-* Ho, ho, ho!
-** early-init.el
-:PROPERTIES:
-:header-args:emacs-lisp+: :noweb-ref early-init.el
-:END:
-
-#+begin_src emacs-lisp :noweb-ref no :tangle early-init.el :exports none
-<<early-init.el>>
-#+end_src
+* Yo!
 
 #+begin_src emacs-lisp
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
@@ -177,26 +168,8 @@ byte-compiled before it is loaded."
 
 (advice-add #'org-babel-load-file :override #'meq/org-babel-load-file-advice)
 
-(defun meq/reload-early-init nil (interactive)
-    (org-babel-load-file (concat pre-user-emacs-directory "README.org") t))
+(defun meq/reload-early-init nil (interactive) (org-babel-load-file
+    (concat pre-user-emacs-directory "early-init.aiern.org")
+    t))
 (meq/reload-early-init)
-#+end_src
-
-** init.el
-:PROPERTIES:
-:header-args:emacs-lisp+: :noweb-ref init.el
-:END:
-
-#+begin_src emacs-lisp :noweb-ref no :tangle init.el :exports none
-<<init.el>>
-#+end_src
-
-#+begin_src emacs-lisp
-;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
-(when (version< emacs-version "27") (load (concat
-                                            (file-name-directory load-file-name)
-                                            "early-init.el")))
-
-(defun meq/reload-first-init nil (interactive) (meq/cl (meq/ued* "FEEDME.org")))
-(meq/reload-first-init)
 #+end_src

@@ -11,13 +11,15 @@
 !**/**/*.git*
 !**/**/*.dep
 
+!/settings/**/**
 !/themes/screenshots/**/**
 
 !/LICENSE
 !/borg.gif
 !/nebby.webp
 !/git-subtree
-!/CHANGEME
+!/early-init.el
+!/init.el
 
 **/**/README.el
 **/**/README.elc

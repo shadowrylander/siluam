@@ -144,7 +144,7 @@ include tests.mk
 .DEFAULT_GOAL := emacs
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
-profile = $(shell cat $(mkfileDir)/CHANGEME)
+profile = $(shell cat $(mkfileDir)/default.aiern.org)
 
 pre-test: subinit
 

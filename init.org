@@ -1,0 +1,22 @@
+#+setupfile: ./settings/TANGLE.org
+#+include: ./settings/README.org
+
+* হ্যালো! Hello!
+
+Step 3 of my version of a literate configuration for [[https://www.gnu.org/software/emacs/][GNU Emacs]].
+
+The ~noweb-ref~ headers are adapted from
+[[https://emacs.stackexchange.com/users/388/melioratus][Melioratus's]] answer
+[[https://emacs.stackexchange.com/a/38935/31428][here]].
+
+* Ho, Ho, Ho!
+
+#+begin_src emacs-lisp
+;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
+(when (version< emacs-version "27") (load (concat
+                                            (file-name-directory load-file-name)
+                                            "early-init.el")))
+
+(defun meq/reload-first-init nil (interactive) (meq/cl (meq/ued* "init.aiern.org")))
+(meq/reload-first-init)
+#+end_src

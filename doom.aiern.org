@@ -1,5 +1,5 @@
-#+setupfile: ./README.org
-#+include: ./README.org
+#+setupfile: ./settings/TANGLE.org
+#+include: ./settings/README.org
 
 * init.el
 
