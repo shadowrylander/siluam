@@ -38,6 +38,7 @@
         build-step = ./bin/doom --yes --localdir .local install
         build-step = ./bin/doom --yes --localdir .local sync -u
         build-step = ./bin/doom --yes --localdir .local doctor
+        build-step = ./bin/doom --yes --localdir .local env
 [submodule "exec-path-from-shell"]
         path = lib/exec-path-from-shell
         url = https://github.com/purcell/exec-path-from-shell.git

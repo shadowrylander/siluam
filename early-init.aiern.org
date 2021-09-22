@@ -251,9 +251,13 @@ Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-
     (insert-file-contents (meq/ued* "default.aiern.org"))
     (buffer-string)))
 
+(defun meq/get-profile-check (profile &rest args)
+    (pcase profile
+        (t (if args (apply #'f-join args) (meq/ued-profiles profile ".local")))))
+
 (let* ((path (meq/ued-profiles meq/var/default-profile)))
     (if (f-exists? path)
-        (if (f-exists? (f-join path ".local"))
+        (if (f-exists? (meq/get-profile-check meq/var/default-profile))
             (one-activate meq/var/default-profile)
             (one-build meq/var/default-profile t))
         (one-assimilate meq/var/default-profile (one-get meq/var/default-profile "url"))))
@@ -286,7 +290,7 @@ Let's "quickly" set up the selected profile as well:
 #+begin_src emacs-lisp
 (let* ((path (meq/ued-profiles meq/var/profile-name)))
     (if (f-exists? path)
-        (if (f-exists? (f-join path ".local"))
+        (if (f-exists? (meq/get-profile-check meq/var/profile-name))
             (one-activate meq/var/profile-name)
             (one-build meq/var/profile-name t))
         (one-assimilate meq/var/profile-name (one-get meq/var/profile-name "url"))))
@@ -814,7 +818,7 @@ This function can be succinctly explained in a few steps.
 When the ~arg~ passed to this function exists in ~command-line-args~...
 
 #+begin_src emacs-lisp
-(defun meq/load-from-cla (arg byte-compile &rest body)
+(defun meq/load-from-cla (arg byte-compile dont-add-load-path &rest body)
     (eval `(meq/when-item-in-cla ,arg
 #+end_src
 
@@ -876,7 +880,7 @@ Otherwise, if we told ~meq/load-from-cla~ to byte-compile ~dir~:
 Then add ~dir~ to the ~load-path~:
 
 #+begin_src emacs-lisp
-                (add-to-list 'load-path dir)
+                (unless dont-add-load-path (add-to-list 'load-path dir))
 #+end_src
 
 And finally, if ~item~ was originally a file that exists, load it, and if it's an ~org~ file,
@@ -894,7 +898,7 @@ command-line, and otherwise, load the profile's usual ~early-init~ if it exists.
 
 #+begin_src emacs-lisp
 (meq/if-item-in-cla "--profile-early-init"
-    (meq/load-from-cla "--profile-early-init")
+    (meq/load-from-cla "--profile-early-init" nil t)
     (if meq/var/literate-config
         (meq/cl (meq/ued "early-init.org"))
         (if (string=
