@@ -1,0 +1,9 @@
+alhassy
+centaur
+damascus
+doom
+graphene
+nano
+patrick
+prelude
+spacemacs
