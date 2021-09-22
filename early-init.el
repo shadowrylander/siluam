@@ -11,15 +11,77 @@
 ;; (load (concat pre-user-emacs-directory "siluam/straight-config.el"))
 ;; (load (concat pre-user-emacs-directory "siluam/quelpa.el"))
 
-(setq meq/var/slash (if (member system-type '(windows-nt ms-dos)) "\\" "/"))
+(defvar meq/var/windows (member system-type '(windows-nt ms-dos)))
+(defvar meq/var/slash (if meq/var/windows "\\" "/"))
+;; Yo!:1 ends here
 
+;; Electric Sheep
+
+;; I have an Android device running [[https://termux.com/][Termux]], so:
+
+
+;; [[file:early-init.org::*Electric Sheep][Electric Sheep:1]]
+(defvar meq/var/phone
+    (ignore-errors (string-match-p (regexp-quote "Android") (shell-command-to-string "uname -a"))))
+(when meq/var/phone (load (concat pre-user-emacs-directory "siluam" meq/var/slash "scroll-bar.el")))
+;; Electric Sheep:1 ends here
+
+;; RESISTENCE IS FUTILE
+
+;; #+begin_export html
+;; <p align="center"><a href="https://github.com/emacscollective/borg"><img src="borg.gif"></a></p>
+;; #+end_export
+
+
+;; [[file:early-init.org::*RESISTENCE IS FUTILE][RESISTENCE IS FUTILE:1]]
 (setq borg-drones-directory (concat pre-user-emacs-directory "lib" meq/var/slash))
 
-(mapc #'(lambda (pkg) (interactive)
-          (add-to-list 'load-path (concat pre-user-emacs-directory "siluam" meq/var/slash (symbol-name pkg)) t)
-          (require pkg))
-    '(emacsql emacsql-sqlite closql epkg borg))
+(defun meq/require-and-load (pkg)
+    (add-to-list 'load-path (concat pre-user-emacs-directory "siluam" meq/var/slash pkg) t)
+    (require (intern pkg)))
+(mapc 'meq/require-and-load '("emacsql" "emacsql-sqlite" "closql"))
+(unless meq/var/windows (meq/require-and-load "epkg"))
+(meq/require-and-load "borg")
+;; RESISTENCE IS FUTILE:1 ends here
 
+
+
+;; First of all, let's make the error message a /little/ more descriptive:
+
+
+;; [[file:early-init.org::*RESISTENCE IS FUTILE][RESISTENCE IS FUTILE:2]]
+(defun meq/borg--call-git-advice (pkg &rest args)
+  (let ((process-connection-type nil)
+        (buffer (generate-new-buffer
+                 (concat " *Borg Git" (and pkg (concat " " pkg)) "*"))))
+    (if (eq (apply #'call-process "git" nil buffer nil args) 0)
+        (kill-buffer buffer)
+      (with-current-buffer buffer
+        (special-mode))
+      (pop-to-buffer buffer)
+      (error "Borg Git: %s %s:\n\n%s" pkg args (buffer-string)))))
+(advice-add #'borg--call-git :override #'meq/borg--call-git-advice)
+;; RESISTENCE IS FUTILE:2 ends here
+
+
+
+;; I most likely already checked the code of the package I want to install:
+
+
+;; [[file:early-init.org::*RESISTENCE IS FUTILE][RESISTENCE IS FUTILE:3]]
+(advice-add #'borg--maybe-confirm-unsafe-action :override #'ignore)
+;; RESISTENCE IS FUTILE:3 ends here
+
+
+
+;; And I would not like to reuse my ~gitdir~:
+
+
+;; [[file:early-init.org::*RESISTENCE IS FUTILE][RESISTENCE IS FUTILE:4]]
+(advice-add #'borg--maybe-reuse-gitdir :override #'ignore)
+;; RESISTENCE IS FUTILE:4 ends here
+
+;; [[file:early-init.org::*RESISTENCE IS FUTILE][RESISTENCE IS FUTILE:5]]
 (defun meq/borg-build-advice (clone &optional activate)
   "Build the clone named CLONE.
 Interactively, or when optional ACTIVATE is non-nil,
@@ -162,4 +224,4 @@ byte-compiled before it is loaded."
     (concat pre-user-emacs-directory "early-init.aiern.org")
     t))
 (meq/reload-early-init)
-;; Yo!:1 ends here
+;; RESISTENCE IS FUTILE:5 ends here

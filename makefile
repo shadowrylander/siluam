@@ -1,5 +1,6 @@
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
+SHELL := /usr/bin/env xonsh
 
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))

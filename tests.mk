@@ -1,5 +1,6 @@
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
+SHELL := /usr/bin/env xonsh
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 profile = $(shell cat $(mkfileDir)/default.aiern.org)

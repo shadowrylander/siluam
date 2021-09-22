@@ -6,15 +6,6 @@
 Step 2 of my version of a literate configuration for [[https://www.gnu.org/software/emacs/][GNU Emacs]].
 
 * Wheee!
-** Electric Sheep
-
-First of all, I don't know how to check if I'm running on my phone, so I pass in a command-line argument:
-
-#+begin_src emacs-lisp
-(defvar meq/var/phone (member "-p" command-line-args))
-(delete "-p" command-line-args)
-#+end_src
-
 ** Double Dutch can be beat
 
 Then I'll remove the double dashes from scripts:
@@ -188,38 +179,6 @@ managed by... well... you'll see.
 
 ** RESISTANCE IS FUTILE
 
-#+begin_export html
-<p align="center"><a href="https://github.com/emacscollective/borg"><img src="borg.gif"></a></p>
-#+end_export
-
-First of all, let's make the error message a /little/ more descriptive:
-
-#+begin_src emacs-lisp
-(defun meq/borg--call-git-advice (pkg &rest args)
-  (let ((process-connection-type nil)
-        (buffer (generate-new-buffer
-                 (concat " *Borg Git" (and pkg (concat " " pkg)) "*"))))
-    (if (eq (apply #'call-process "git" nil buffer nil args) 0)
-        (kill-buffer buffer)
-      (with-current-buffer buffer
-        (special-mode))
-      (pop-to-buffer buffer)
-      (error "Borg Git: %s %s:\n\n%s" pkg args (buffer-string)))))
-(advice-add #'borg--call-git :override #'meq/borg--call-git-advice)
-#+end_src
-
-I most likely already checked the code of the package I want to install:
-
-#+begin_src emacs-lisp
-(advice-add #'borg--maybe-confirm-unsafe-action :override #'ignore)
-#+end_src
-
-And I would not like to reuse my ~gitdir~:
-
-#+begin_src emacs-lisp
-(advice-add #'borg--maybe-reuse-gitdir :override #'ignore)
-#+end_src
-
 I'll assimilate the packages from my ~.gitmodules~ file:
 
 # with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
@@ -254,22 +213,10 @@ We'll wake up the borg here:
 *** Welcome to the 29th century
 
 Meet [[https://github.com/shadowrylander/one][One]],
-a 29th century [[https://github.com/emacscollective/borg][Borg]]!
+a 29th century [[https://github.com/emacscollective/borg][Borg]] Drone!
 
 #+begin_src emacs-lisp
 (require 'one)
-#+end_src
-
-We'll add similar advice to his functions, first being ~one--maybe-confirm-unsafe-action~:
-
-#+begin_src emacs-lisp
-(advice-add #'one--maybe-confirm-unsafe-action :override #'ignore)
-#+end_src
-
-And finally ~one--maybe-reuse-gitdir~:
-
-#+begin_src emacs-lisp
-(advice-add #'one--maybe-reuse-gitdir :override #'ignore)
 #+end_src
 
 Do we have to update any profiles?
@@ -304,10 +251,7 @@ Great. Now let's set up the default profile, [[https://github.com/hlissner/doom-
     (insert-file-contents (meq/ued* "default.aiern.org"))
     (buffer-string)))
 
-(meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" (meq/ued-profiles))
-
 (let* ((path (meq/ued-profiles meq/var/default-profile)))
-    (meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" path)
     (if (f-exists? path)
         (if (f-exists? (f-join path ".local"))
             (one-activate meq/var/default-profile)
@@ -341,7 +285,6 @@ Let's "quickly" set up the selected profile as well:
 
 #+begin_src emacs-lisp
 (let* ((path (meq/ued-profiles meq/var/profile-name)))
-    (meq/call "fd" "*fd del empty dirs*" "." "-HIt" "d" "-t" "e" "-x" "rm" "-rf" path)
     (if (f-exists? path)
         (if (f-exists? (f-join path ".local"))
             (one-activate meq/var/profile-name)
