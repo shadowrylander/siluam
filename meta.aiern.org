@@ -24,34 +24,6 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 [remote "emacsql"]
 	url = https://github.com/skeeto/emacsql.git
 	fetch = +refs/heads/master:refs/remotes/origin/master
-[submodule "alloy"]
-  pushurl = git@github.com:<<username>>/alloy.git
-[submodule "cosmoem"]
-  pushurl = git@gitlab.com:<<username>>/cosmoem.git
-[submodule "deino"]
-  pushurl = git@github.com:<<username>>/deino.git
-[submodule "doc"]
-  pushurl = git@github.com:<<username>>/doc.git
-[submodule "fell"]
-  pushurl = git@github.com:<<username>>/fell.git
-[submodule "janus"]
-  pushurl = git@github.com:<<username>>/janus.git
-[submodule "meq"]
-  pushurl = git@github.com:<<username>>/meq
-[submodule "one"]
-  pushurl = git@github.com:<<username>>/one.git
-[submodule "prime"]
-  pushurl = git@github.com:<<username>>/prime.git
-[submodule "sorrow"]
-	pushurl = git@github.com:<<username>>/sorrow.git
-[submodule "titan"]
-	pushurl = git@github.com:<<username>>/titan.git
-[submodule "uru"]
-	pushurl = git@github.com:<<username>>/uru.git
-[submodule "use-package-deino"]
-	pushurl = git@github.com:<<username>>/use-package-deino.git
-[submodule "use-package-extras"]
-	pushurl = git@github.com:<<username>>/use-package-extras.git
 #+end_src
 
 * pre-borg.mk
