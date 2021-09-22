@@ -95,6 +95,9 @@
 [submodule "naked"]
         path = lib/naked
         url = https://github.com/emacsmirror/naked.git
+[submodule "nano"]
+        path = profiles/nano
+        url = https://github.com/rougier/nano-emacs.git
 [submodule "no-littering"]
         path = lib/no-littering
         url = https://github.com/emacscollective/no-littering.git

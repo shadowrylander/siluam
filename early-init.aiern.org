@@ -211,20 +211,13 @@ First of all, let's make the error message a /little/ more descriptive:
 I most likely already checked the code of the package I want to install:
 
 #+begin_src emacs-lisp
-(defun meq/borg--maybe-confirm-unsafe-action-advice (action package url) (require 'epkg nil t))
-(advice-add #'borg--maybe-confirm-unsafe-action :override #'meq/borg--maybe-confirm-unsafe-action-advice)
+(advice-add #'borg--maybe-confirm-unsafe-action :override #'ignore)
 #+end_src
 
-And I /would/ like to reuse my ~gitdir~, thank you for asking!
+And I would not like to reuse my ~gitdir~:
 
 #+begin_src emacs-lisp
-(defun meq/borg--maybe-reuse-gitdir-advice (pkg)
-  (let ((gitdir (borg-gitdir pkg))
-        (topdir (borg-worktree pkg)))
-    (when (and (file-exists-p gitdir)
-               (not (file-exists-p topdir)))
-      (borg--restore-worktree pkg))))
-(advice-add #'borg--maybe-reuse-gitdir :override #'meq/borg--maybe-reuse-gitdir-advice)
+(advice-add #'borg--maybe-reuse-gitdir :override #'ignore)
 #+end_src
 
 I'll assimilate the packages from my ~.gitmodules~ file:
@@ -270,20 +263,13 @@ a 29th century [[https://github.com/emacscollective/borg][Borg]]!
 We'll add similar advice to his functions, first being ~one--maybe-confirm-unsafe-action~:
 
 #+begin_src emacs-lisp
-(defun meq/one--maybe-confirm-unsafe-action-advice (action package url) (require 'epkg nil t))
-(advice-add #'one--maybe-confirm-unsafe-action :override #'meq/one--maybe-confirm-unsafe-action-advice)
+(advice-add #'one--maybe-confirm-unsafe-action :override #'ignore)
 #+end_src
 
 And finally ~one--maybe-reuse-gitdir~:
 
 #+begin_src emacs-lisp
-(defun meq/one--maybe-reuse-gitdir-advice (profile)
-  (let ((gitdir (one-gitdir profile))
-        (topdir (one-worktree profile)))
-    (when (and (file-exists-p gitdir)
-               (not (file-exists-p topdir)))
-      (one--restore-worktree profile))))
-(advice-add #'one--maybe-reuse-gitdir :override #'meq/one--maybe-reuse-gitdir-advice)
+(advice-add #'one--maybe-reuse-gitdir :override #'ignore)
 #+end_src
 
 Do we have to update any profiles?
@@ -983,5 +969,8 @@ If there's an alternate library directory or file the user wants to load,
 #+begin_src emacs-lisp
 (meq/if-item-in-cla "--profile-early-lib"
     (meq/load-from-cla "--profile-early-lib" t)
-    (meq/cl (meq/ued (concat "early-" meq/var/profile-name ".el"))))
+    (let* ((early-lib (meq/ued (concat "early-" meq/var/profile-name ".el"))))
+        (when (f-exists? early-lib)
+            (add-to-list 'load-path (meq/ued) t)
+            (meq/cl early-lib))))
 #+end_src

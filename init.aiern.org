@@ -247,5 +247,8 @@ If there's an alternate library directory or file the user wants to load,
 #+begin_src emacs-lisp
 (meq/if-item-in-cla "--profile-lib"
     (meq/load-from-cla "--profile-lib" t)
-    (meq/cl (meq/ued (concat meq/var/profile-name ".el"))))
+    (let* ((lib (meq/ued (concat meq/var/profile-name ".el"))))
+        (when (f-exists? lib)
+            (add-to-list 'load-path (meq/ued) t)
+            (meq/cl lib))))
 #+end_src
