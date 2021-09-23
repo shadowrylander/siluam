@@ -1,0 +1,20 @@
+[subtree "settings"]
+	url = settings
+	path = settings
+	branch = main
+[subtree "siluam/borg"]
+	url = borg
+	path = siluam/borg
+	branch = master
+[subtree "siluam/epkg"]
+	url = epkg
+	path = siluam/epkg
+	branch = master
+[subtree "siluam/closql"]
+	url = closql
+	path = siluam/closql
+	branch = master
+[subtree "siluam/emacsql"]
+	url = emacsql
+	path = siluam/emacsql
+	branch = master

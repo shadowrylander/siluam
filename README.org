@@ -1,0 +1,23 @@
+#+setupfile: ./settings/README.org
+#+include: ./settings/README.org
+
+#+begin_quote
+Like Chemacs, but worse! — John Oliver
+#+end_quote
+
+* হ্যালো-এ-লো-এ-লো! Hello-a-lo-a-lo!
+
+My config has been inspired primarily by the configurations of
+[[https://alhassy.github.io/emacs.d/index.html][Musa Al-hassy]]
+and [[https://github.com/patrickt/emacs][Patrick Thomson]]; it is also a rudimentary version of
+[[https://github.com/plexus][Arne Brasseur's]]
+[[https://github.com/plexus/chemacs][chemacs]] and [[https://github.com/plexus/chemacs2][chemacs2]].
+
+* Damascus
+
+Okay, I'll be honest with you: my primary config is held [[https://github.com/shadowrylander/damascus][here]];
+this is just the ~chemacs~ initialization of it. I figured that, if other people may want to use my work
+(which uses my sort-of custom-made ~OREO LICENSE~, based off of the
+[[http://www.wtfpl.net/][Do What The Fuck You Want To Public License]]), I might as well not burden them with
+the flaws in my own profile, right? As it were, this system is still designed with my config in mind, so you
+may find some /funcy/ pieces of code in here as well.
