@@ -1,6 +1,5 @@
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
-SHELL := /usr/bin/env xonsh
 
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -9,7 +8,7 @@ mkfileDir := $(dir $(mkfilePath))
 init: pre-init tangle
 
 pre-init:
-|-fd . -HIt d -t e -x rm -rf
+|-fd . $(mkfileDir) -HIt d -t e -x rm -rf
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 
 tangle-setup:
@@ -23,7 +22,7 @@ tangle: tangle-setup
     -E resting.aiern.org \
     -x $(mkfileDir)/settings/backup-tangle.sh
 |fd . $(mkfileDir)/settings \
-    -HIe sh \
+    -HIe sh\
     -x chmod +x
 
 subinit: init

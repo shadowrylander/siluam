@@ -40,7 +40,10 @@
     (add-to-list 'load-path (concat pre-user-emacs-directory "siluam" meq/var/slash pkg) t)
     (require (intern pkg)))
 (mapc 'meq/require-and-load '("emacsql" "emacsql-sqlite" "closql"))
-(unless meq/var/windows (meq/require-and-load "epkg"))
+(unless (or
+          meq/var/phone
+          ;; meq/var/windows
+          ) (meq/require-and-load "epkg"))
 (meq/require-and-load "borg")
 ;; RESISTENCE IS FUTILE:1 ends here
 

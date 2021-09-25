@@ -509,3 +509,6 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
+[submodule "bootstrap"]
+	path = profiles/bootstrap
+	url = https://github.com/shadowrylander/bootstrap.git
