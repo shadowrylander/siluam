@@ -57,6 +57,10 @@ test-nw-update-and-kill: test-and-kill-pre
 |$(test) -nw --update --profile $(profile)
 |$(killTest)
 
+bootstrap: test-and-kill-pre
+|$(test) --profile bootstrap
+|$(killTest)
+
 emacs: test
 emacs-nw: nw-test
 remacs: delete emacs

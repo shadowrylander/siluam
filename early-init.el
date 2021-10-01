@@ -26,6 +26,28 @@
 (when meq/var/phone (load (concat pre-user-emacs-directory "siluam" meq/var/slash "scroll-bar.el")))
 ;; Electric Sheep:1 ends here
 
+;; Sorry, got nothing for this
+
+;; I also use [[WSLg][https://github.com/microsoft/wslg]]:
+
+
+;; [[file:early-init.org::*Sorry, got nothing for this][Sorry, got nothing for this:1]]
+(defvar meq/var/wsl
+    (ignore-errors (string-match-p
+                    (regexp-quote "microsoft-standard-WSL")
+                    (shell-command-to-string "uname -a"))))
+;; Sorry, got nothing for this:1 ends here
+
+;; BTW, I use NixOS
+
+;; BTW, I use [[https://nixos.org/][NixOS]]:
+
+
+;; [[file:early-init.org::*BTW, I use NixOS][BTW, I use NixOS:1]]
+(defvar meq/var/nixos
+    (ignore-errors (string-match-p (regexp-quote "nixos") (shell-command-to-string "uname -a"))))
+;; BTW, I use NixOS:1 ends here
+
 ;; RESISTENCE IS FUTILE
 
 ;; #+begin_export html
@@ -193,7 +215,7 @@ build and activate the drone."
       (with-current-buffer buffer
         (special-mode))
       (pop-to-buffer buffer)
-      (error "%s: %s %s:\n\n%s" program pkg args (buffer-string)))))
+      (error "%s: %s:\n\n%s" program args (buffer-string)))))
 
 (defun meq/call-tangle (file)
   (meq/call (concat

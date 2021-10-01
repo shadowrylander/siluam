@@ -27,16 +27,19 @@ tangle: tangle-setup
 
 subinit: init
 |-git clone --depth 1 https://github.com/emacsmirror/epkgs.git $(mkfileDir)/epkgs
-|-git -C $(mkfileDir)/epkgs checkout master
 |-git clone --depth 1 https://github.com/emacsmirror/epkgs.git $(mkfileDir)/var/epkgs
-|-git -C $(mkfileDir)/var/epkgs checkout master
+
+|-git rm -rf --cached lib profiles
+|git -C $(mkfileDir) submodule sync --recursive
 
 # Adapted From:
 # Answer: https://stackoverflow.com/a/56621295/10827766
 # User: https://stackoverflow.com/users/1600536/alim-giray-aytar
-|git -C $(mkfileDir) submodule update --init --depth 1 --recursive --remote
+|git -C $(mkfileDir) submodule update --force --init --depth 1 --recursive --remote
 
-|git -C $(mkfileDir) submodule sync
+|git -C $(mkfileDir) submodule sync --recursive
+|-git rm -rf --cached lib profiles
+
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 
 pull: subinit

@@ -35,6 +35,26 @@ I have an Android device running [[https://termux.com/][Termux]], so:
 (when meq/var/phone (load (concat pre-user-emacs-directory "siluam" meq/var/slash "scroll-bar.el")))
 #+end_src
 
+** Sorry, got nothing for this
+
+I also use [[WSLg][https://github.com/microsoft/wslg]]:
+
+#+begin_src emacs-lisp
+(defvar meq/var/wsl
+    (ignore-errors (string-match-p
+                    (regexp-quote "microsoft-standard-WSL")
+                    (shell-command-to-string "uname -a"))))
+#+end_src
+
+** BTW, I use NixOS
+
+BTW, I use [[https://nixos.org/][NixOS]]:
+
+#+begin_src emacs-lisp
+(defvar meq/var/nixos
+    (ignore-errors (string-match-p (regexp-quote "nixos") (shell-command-to-string "uname -a"))))
+#+end_src
+
 ** RESISTENCE IS FUTILE
 
 #+begin_export html
@@ -194,7 +214,7 @@ build and activate the drone."
       (with-current-buffer buffer
         (special-mode))
       (pop-to-buffer buffer)
-      (error "%s: %s %s:\n\n%s" program pkg args (buffer-string)))))
+      (error "%s: %s:\n\n%s" program args (buffer-string)))))
 
 (defun meq/call-tangle (file)
   (meq/call (concat

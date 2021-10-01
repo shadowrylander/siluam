@@ -22,6 +22,9 @@
 [submodule "alloy"]
         path = lib/alloy
         url = https://github.com/shadowrylander/alloy.git
+[submodule "asoc"]
+        path = lib/asoc
+        url = https://github.com/troyp/asoc.el.git
 [submodule "async"]
         path = lib/async
         url = https://github.com/jwiegley/emacs-async.git
@@ -40,6 +43,9 @@
 [submodule "bind-map"]
         path = lib/bind-map
         url = https://github.com/justbur/emacs-bind-map.git
+[submodule "bootstrap"]
+        path = profiles/bootstrap
+        url = https://github.com/shadowrylander/bootstrap.git
 [submodule "buff-menu+"]
         path = lib/buff-menu+
         url = https://github.com/emacsmirror/buff-menu-plus.git
@@ -156,6 +162,9 @@
 [submodule "faces+"]
         path = lib/faces+
         url = https://github.com/emacsmirror/faces-plus.git
+[submodule "fasd"]
+        path = lib/fasd
+        url = https://framagit.org/steckerhalter/emacs-fasd.git
 [submodule "fell"]
         path = lib/fell
         url = https://github.com/shadowrylander/fell.git
@@ -509,6 +518,6 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
-[submodule "bootstrap"]
-	path = profiles/bootstrap
-	url = https://github.com/shadowrylander/bootstrap.git
+[submodule "zoxide"]
+        path = lib/zoxide
+        url = https://gitlab.com/Vonfry/zoxide.el.git

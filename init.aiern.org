@@ -11,17 +11,24 @@ Step 4 of my version of a literate configuration for [[https://www.gnu.org/softw
 First, we'll set the warning level to emergencies only until after initialization:
 
 #+begin_src emacs-lisp
-(setq meq/var/warning-minimum-level warning-minimum-level)
-(setq warning-minimum-level :emergency)
-(add-hook 'exwm-init-hook #'(lambda nil (interactive)
-    (setq warning-minimum-level meq/var/warning-minimum-level)))
+;; (setq meq/var/warning-minimum-level warning-minimum-level)
+;; (setq warning-minimum-level :emergency)
+;; (add-hook 'exwm-init-hook #'(lambda nil (interactive)
+;;     (setq warning-minimum-level meq/var/warning-minimum-level)))
 #+end_src
 
 This sets up and requires the [[https://github.com/ch11ng/exwm][Emacs X Window Manager]] by
 [[https://github.com/ch11ng][Chris Feng]] for all profiles:
 
 #+begin_src emacs-lisp
-(meq/leaf exwm
+(meq/up exwm
+#+end_src
+
+If the user wants to use a different ~exwm~ config, pass it in on the command-line using ~--profile-exwm~:
+
+#+begin_src emacs-lisp
+    :config
+        (meq/if-item-in-cla "--profile-exwm" (meq/load-from-cla "--profile-exwm" t)
 #+end_src
 
 I want to run the following applications on ~EXWM~ startup:
@@ -29,31 +36,23 @@ I want to run the following applications on ~EXWM~ startup:
 - [[https://obsidian.md/][Obsidian]]
 
 #+begin_src emacs-lisp
-    :hook (exwm-init . post-exwm)
-    :config
-        (defun post-exwm nil (interactive)
-            (unless (member "--profile-exwm" command-line-args)
+            (defun post-exwm nil (interactive)
                 (unless (get-buffer "Alacritty") (meq/run "alacritty"))
-                (unless (get-buffer "obsidian") (meq/run "obsidian"))))
-#+end_src
-
-If the user wants to use a different ~exwm~ config, pass it in on the command-line using ~--profile-exwm~:
-
-#+begin_src emacs-lisp
-        (meq/if-item-in-cla "--profile-exwm" (meq/load-from-cla "--profile-exwm" t)
+                (unless (get-buffer "obsidian") (meq/run "obsidian")))
+            (add-hook 'exwm-init-hook #'post-exwm)
 #+end_src
 
 Load the ~fringe~ package and
 [[https://github.com/lujun9972/el-dmenu/blob/e8cc9b27c79d3ecc252267c082ab8e9c82eab264/dmenu.el][dmenu]]:
 
 #+begin_src emacs-lisp
-            (meq/leaf fringe :config
+            (meq/up fringe :config
                                 ;; (fringe-mode (quote (1 . 1)) nil (fringe))
                                 ;; (fringe-mode '(3 . 0))
                                 ;; (fringe-mode 'none)
                                 ;; (fringe-mode 1)
                                 )
-            (meq/leaf dmenu)
+            (meq/up dmenu)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -115,17 +114,21 @@ Switch buffers quickly:
                         ([?\C-v] . [next])
                         ([?\C-d] . [delete])
                         ([?\C-k] . [S-end delete]))))
-            ;; Enable EXWM
-            (exwm-enable)
-            ;; Configure Ido
-            (exwm-config-ido)
-            ;; Other configurations
-            (exwm-config-misc)
 
-            ;; (exwm-config-default)
-            ;; (exwm-enable)
+            ;; (meq/which-key-change-ryo "e" "exwm")
+#+end_src
 
-            (meq/which-key-change-ryo "e" "exwm")
+Here's the global ~exwm~ deino, triggered by [[https://github.com/shadowrylander/uru][uru]]:
+
+#+begin_src emacs-lisp
+            (defuru exwm-mode t deino-exwm-global (:color blue) "e g"
+                ("`" nil "cancel")
+                ("c" exwm-input-release-keyboard "char mode")
+                ("l" exwm-input-grab-keyboard "line mode")
+                ("r" exwm-reset "reset")
+                ("w" exwm-workspace-switch "workspace switch")
+                ("i" meq/run-interactive "run")
+                ("b" deino-buffer/body "buffers"))
 #+end_src
 
 This is my general ~exwm~ deino, leading to all the other ~exwm~ deinos:
@@ -159,26 +162,25 @@ I use the power button to trigger the general ~exwm~ deino:
             (alloy-def :keymaps demon-run (naked "XF86PowerOff") 'deino-exwm/body)
 #+end_src
 
-And finally, here's the global ~exwm~ deino, triggered by [[https://github.com/shadowrylander/uru][uru]]:
+And finally: no tiling!
 
 #+begin_src emacs-lisp
-            (defuru exwm-mode t deino-exwm-global (:color blue) "e g"
-                ("`" nil "cancel")
-                ("c" exwm-input-release-keyboard "char mode")
-                ("l" exwm-input-grab-keyboard "line mode")
-                ("r" exwm-reset "reset")
-                ("w" exwm-workspace-switch "workspace switch")
-                ("i" meq/run-interactive "run")
-                ("b" deino-buffer/body "buffers")))
+            (setq exwm-manage-force-tiling t)
+            ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
+            ;; (setq exwm-input-line-mode-passthrough t)
 #+end_src
 
-Also, no tiling!
-
 #+begin_src emacs-lisp
-    :custom (exwm-manage-force-tiling . t)
-        ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
-        ;; (exwm-input-line-mode-passthrough . t)
-    )
+            ;; Enable EXWM
+            (exwm-enable)
+            ;; Configure Ido
+            ;; (exwm-config-ido)
+            ;; Other configurations
+            ;; (exwm-config-misc)
+
+            ;; (exwm-config-default)
+            ;; (exwm-enable)
+))
 #+end_src
 
 ** I'm pretty sure I forgot something...
